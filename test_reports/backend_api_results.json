@@ -1,0 +1,206 @@
+{
+  "timestamp": "2026-03-26T01:28:32.305906",
+  "total_tests": 33,
+  "passed_tests": 33,
+  "success_rate": 100.0,
+  "results": [
+    {
+      "test": "Root API Endpoint",
+      "success": true,
+      "details": "Success",
+      "timestamp": "2026-03-26T01:28:27.881775"
+    },
+    {
+      "test": "Admin Initialization",
+      "success": true,
+      "details": "Admin exists or created",
+      "timestamp": "2026-03-26T01:28:28.014045"
+    },
+    {
+      "test": "Admin Login",
+      "success": true,
+      "details": "Token received, user role: admin",
+      "timestamp": "2026-03-26T01:28:28.369308"
+    },
+    {
+      "test": "Get Current User",
+      "success": true,
+      "details": "User: Administrador Sistema",
+      "timestamp": "2026-03-26T01:28:28.483530"
+    },
+    {
+      "test": "Dashboard Stats",
+      "success": true,
+      "details": "Total members: 0, Active: 0",
+      "timestamp": "2026-03-26T01:28:28.636555"
+    },
+    {
+      "test": "Constants: postos",
+      "success": true,
+      "details": "5 items",
+      "timestamp": "2026-03-26T01:28:28.744527"
+    },
+    {
+      "test": "Constants: unidades",
+      "success": true,
+      "details": "14 items",
+      "timestamp": "2026-03-26T01:28:28.860755"
+    },
+    {
+      "test": "Constants: municipios",
+      "success": true,
+      "details": "14 items",
+      "timestamp": "2026-03-26T01:28:28.971280"
+    },
+    {
+      "test": "Constants: estado-civil",
+      "success": true,
+      "details": "9 items",
+      "timestamp": "2026-03-26T01:28:29.071674"
+    },
+    {
+      "test": "Constants: tipos-sanguineos",
+      "success": true,
+      "details": "8 items",
+      "timestamp": "2026-03-26T01:28:29.180191"
+    },
+    {
+      "test": "Constants: graus-estudo",
+      "success": true,
+      "details": "9 items",
+      "timestamp": "2026-03-26T01:28:29.297808"
+    },
+    {
+      "test": "Constants: tipos-punicao",
+      "success": true,
+      "details": "7 items",
+      "timestamp": "2026-03-26T01:28:29.412020"
+    },
+    {
+      "test": "Constants: tipos-licenca",
+      "success": true,
+      "details": "12 items",
+      "timestamp": "2026-03-26T01:28:29.523654"
+    },
+    {
+      "test": "Constants: cartao-conducao",
+      "success": true,
+      "details": "6 items",
+      "timestamp": "2026-03-26T01:28:29.627057"
+    },
+    {
+      "test": "Constants: member-status",
+      "success": true,
+      "details": "5 items",
+      "timestamp": "2026-03-26T01:28:29.739736"
+    },
+    {
+      "test": "Create Member",
+      "success": true,
+      "details": "Member created with ID: 1f551214-88ec-4703-826f-05d9e0022cae",
+      "timestamp": "2026-03-26T01:28:29.963369"
+    },
+    {
+      "test": "List Members",
+      "success": true,
+      "details": "Total: 1, Retrieved: 1",
+      "timestamp": "2026-03-26T01:28:30.067223"
+    },
+    {
+      "test": "Get Member",
+      "success": true,
+      "details": "Retrieved member: Test Member 012829",
+      "timestamp": "2026-03-26T01:28:30.193977"
+    },
+    {
+      "test": "Update Member",
+      "success": true,
+      "details": "Success",
+      "timestamp": "2026-03-26T01:28:30.324486"
+    },
+    {
+      "test": "Filter Members: Ativo",
+      "success": true,
+      "details": "1 members",
+      "timestamp": "2026-03-26T01:28:30.436289"
+    },
+    {
+      "test": "Filter Members: Falecido",
+      "success": true,
+      "details": "0 members",
+      "timestamp": "2026-03-26T01:28:30.557249"
+    },
+    {
+      "test": "Filter Members: Separa\u00e7\u00e3o do Servi\u00e7o",
+      "success": true,
+      "details": "0 members",
+      "timestamp": "2026-03-26T01:28:30.663777"
+    },
+    {
+      "test": "Filter Members: Reserva",
+      "success": true,
+      "details": "0 members",
+      "timestamp": "2026-03-26T01:28:30.776433"
+    },
+    {
+      "test": "Filter Members: Reforma",
+      "success": true,
+      "details": "0 members",
+      "timestamp": "2026-03-26T01:28:30.885998"
+    },
+    {
+      "test": "Create User",
+      "success": true,
+      "details": "RH user created with ID: d64ff328-4ebb-42e8-bddd-91e9a42c775a",
+      "timestamp": "2026-03-26T01:28:31.229933"
+    },
+    {
+      "test": "List Users",
+      "success": true,
+      "details": "Retrieved 2 users",
+      "timestamp": "2026-03-26T01:28:31.383371"
+    },
+    {
+      "test": "Get User",
+      "success": true,
+      "details": "Retrieved user: Test RH User",
+      "timestamp": "2026-03-26T01:28:31.529388"
+    },
+    {
+      "test": "Get Notifications",
+      "success": true,
+      "details": "0 notifications",
+      "timestamp": "2026-03-26T01:28:31.677263"
+    },
+    {
+      "test": "Unread Notifications Count",
+      "success": true,
+      "details": "0 unread",
+      "timestamp": "2026-03-26T01:28:31.791618"
+    },
+    {
+      "test": "Create Backup",
+      "success": true,
+      "details": "Backup ID: 54c7af2c-3df2-4ba9-902f-bdaebe2a4074, Members: 1",
+      "timestamp": "2026-03-26T01:28:31.940347"
+    },
+    {
+      "test": "List Backups",
+      "success": true,
+      "details": "1 backups",
+      "timestamp": "2026-03-26T01:28:32.064566"
+    },
+    {
+      "test": "Cleanup: Delete Test Member",
+      "success": true,
+      "details": "Success",
+      "timestamp": "2026-03-26T01:28:32.194956"
+    },
+    {
+      "test": "Cleanup: Delete Test User",
+      "success": true,
+      "details": "Success",
+      "timestamp": "2026-03-26T01:28:32.305647"
+    }
+  ]
+}
