@@ -2,6 +2,7 @@
 ## PRD - Product Requirements Document
 
 ### Data de Criação: 2026-01-26
+### Última Atualização: 2026-03-26
 
 ---
 
@@ -52,6 +53,7 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 - [x] Gráficos por posto
 - [x] Gráficos por tipo sanguíneo
 - [x] Filtro por unidade
+- [x] Cards clicáveis para navegação rápida por status
 
 ### 3.3 Gestão de Membros
 - [x] Cadastro com 16 steps
@@ -62,6 +64,8 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 - [x] Alteração de status
 - [x] Tabs por status
 - [x] Impressão de listas
+- [x] Upload de fotos e documentos
+- [x] Visualização de anexos/PDFs
 
 ### 3.4 Gestão de Usuários
 - [x] CRUD de usuários
@@ -72,43 +76,44 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 - [x] Backup manual
 - [x] Histórico de backups
 
+### 3.6 Impressão
+- [x] Cabeçalho institucional: "FALINTIL-Forças de Defesa de Timor-Leste (F-FDTL)"
+- [x] Subtítulo: "Quartel General"
+- [x] Impressão por step individual
+- [x] Impressão de ficha completa
+
 ---
 
-## 4. O que foi Implementado (v1.0)
+## 4. Changelog
 
-### Backend (server.py)
-- Autenticação JWT completa
-- CRUD de usuários
-- CRUD de membros (16 steps)
-- Dashboard statistics
-- Sistema de notificações
-- Upload de arquivos
-- Backup do sistema
-- Endpoints de constantes (postos, unidades, etc.)
+### v1.1 (2026-03-26)
+- **Correção:** Foto de perfil exibindo corretamente (helper getFileUrl)
+- **Correção:** Anexos/PDFs abrindo sem erro de autenticação
+- **Correção:** Texto visível em dropdowns/selects (CSS fix)
+- **Correção:** Dashboard cards clicáveis navegando para lista filtrada
+- **Melhoria:** Cabeçalho de impressão atualizado com nome completo institucional
+- **Melhoria:** MembersPage lendo query params da URL para filtro automático
 
-### Frontend
-- Login page com design institucional
-- Dashboard com gráficos (Recharts)
-- Página de membros com tabs por status
-- Formulário de 16 steps para cadastro
-- Visualização detalhada de membros
-- Gestão de usuários
-- Sistema de backup
-- Layout responsivo com sidebar
+### v1.0 (2026-01-26)
+- Backend completo com autenticação JWT
+- CRUD de usuários e membros
+- Dashboard com estatísticas
+- Formulário de 16 steps
+- Sistema de upload de arquivos
+- Tema claro/escuro
 
 ---
 
 ## 5. Backlog Priorizado
 
 ### P0 (Crítico) - Próxima Iteração
-- [ ] Integração de email (Resend) para notificações
+- [ ] Integração de email (Resend) para notificações de reforma
 - [ ] Cálculo automático de dias em licenças
-- [ ] Relatórios PDF por step
 
 ### P1 (Alta Prioridade)
 - [ ] Backup automático agendado
 - [ ] Histórico de alterações por membro
-- [ ] Exportação de dados em PDF completo
+- [ ] Relatórios PDF por step
 - [ ] Validação de idade para reforma (60 anos)
 
 ### P2 (Média Prioridade)
@@ -119,17 +124,15 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 
 ### P3 (Baixa Prioridade)
 - [ ] Multi-idioma (Tétum)
-- [ ] Tema escuro
 - [ ] Logs de auditoria
 
 ---
 
 ## 6. Próximos Passos
 
-1. Configurar integração com Resend para emails
-2. Implementar cálculo automático de dias em licenças
-3. Melhorar geração de PDF com logo institucional
-4. Implementar validação automática de idade para reforma
+1. Configurar integração com Resend para emails de alerta de reforma
+2. Implementar backup automático agendado
+3. Adicionar validação automática de idade para reforma
 
 ---
 
