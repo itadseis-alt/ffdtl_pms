@@ -1,0 +1,125 @@
+{
+  "theme": "LIGHT",
+  "archetype": "4 (Swiss & High-Contrast)",
+  "rationale": "For a military personnel management system, clarity, authority, and data legibility are paramount. A light theme with stark, high-contrast structural elements (dark sidebars/headers) ensures forms (16 steps) and data grids are easy to read. Inspired by tactical command centers and enterprise HR dashboards. Emphasizes the institutional military feel.",
+  "typography": {
+    "headings": {
+      "family": "Outfit",
+      "weights": ["600", "700"],
+      "strategy": "Used for page titles, section headers, and data visualization numbers. Tracking tight for larger sizes to project authority."
+    },
+    "body": {
+      "family": "IBM Plex Sans",
+      "weights": ["400", "500", "600"],
+      "strategy": "Technical, highly legible font for dense data tables, forms, and micro-copy. Perfect for 'Control Room' density."
+    }
+  },
+  "colors": {
+    "primary": "#064e3b",
+    "primary_hover": "#065f46",
+    "accent": "#ca8a04",
+    "background": "#f8fafc",
+    "surface": "#ffffff",
+    "surface_dark": "#0f172a",
+    "border": "#e2e8f0",
+    "text_primary": "#0f172a",
+    "text_secondary": "#64748b",
+    "success": "#16a34a",
+    "warning": "#eab308",
+    "danger": "#dc2626",
+    "info": "#0284c7"
+  },
+  "spacing_and_layout": {
+    "strategy": "Control Room Grid",
+    "details": "Dense but structured. 1px solid borders for separation. No soft drop shadows. Sharp or 4px max border-radius.",
+    "dashboard_grid": "grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4",
+    "form_layout": "Split layout: Vertical stepper on the left (col-span-1), Active step form on the right (col-span-3)."
+  },
+  "components": {
+    "cards": "Flat background, 1px border-slate-200, rounded-sm, no shadow. Hover state: slight darkening of border to border-slate-300.",
+    "buttons": "Square or rounded-sm. Primary buttons are emerald-900 with white text. Ghost buttons use slate-600. Add hover:bg-emerald-800.",
+    "inputs": "Shadcn defaults but with rounded-sm, focus:ring-emerald-900. No soft shadows.",
+    "tables": "Dense padding (py-2 px-3), striped rows (bg-slate-50/50), sticky header. Crucial for the large list of personnel.",
+    "stepper": "Vertical timeline style for the 16 steps, with clear 'completed', 'active', and 'pending' states. Use accent color (gold/yellow) for the active step indicator."
+  },
+  "media": {
+    "login_background": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/c19a0984-e82e-494a-88ed-ca23a6e50af4/images/1c7ab59a45ac931c0be81a71c7958007437679b24a3e561dd67846ca22b32986.png",
+      "description": "Minimalist dark tactical topographic map background.",
+      "category": "login_bg"
+    },
+    "institutional_logo": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/c19a0984-e82e-494a-88ed-ca23a6e50af4/images/79d39cdf6f7a79fab98f970d607b22ce980c214e0ef3771881e5abae75ac250c.png",
+      "description": "Clean modern military emblem.",
+      "category": "logo"
+    },
+    "soldier_placeholder": {
+      "url": "https://images.unsplash.com/photo-1763656444717-354379c62a0e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHwxfHxtaWxpdGFyeSUyMHNvbGRpZXJzJTIwZm9ybWF0aW9ufGVufDB8fHx8MTc3NDQ4NzUxN3ww&ixlib=rb-4.1.0&q=85",
+      "description": "Soldiers in uniform stand at attention with rifles.",
+      "category": "profile_placeholder"
+    },
+    "landscape_placeholder": {
+      "url": "https://images.unsplash.com/photo-1717551582495-2d20feb8d730?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjh8MHwxfHNlYXJjaHwxfHx0aW1vciUyMGxlc3RlJTIwbGFuZHNjYXBlfGVufDB8fHx8MTc3NDQ4NzUxOHww&ixlib=rb-4.1.0&q=85",
+      "description": "Timor Leste aerial landscape",
+      "category": "dashboard_banner"
+    }
+  },
+  "icons": {
+    "library": "@phosphor-icons/react",
+    "installation": "yarn add @phosphor-icons/react",
+    "strategy": "Weight: 'regular' for standard UI, 'fill' for active states."
+  },
+  "motion": {
+    "strategy": "Minimalist and precise. No bouncy animations. Snappy transitions.",
+    "duration": "150ms",
+    "easing": "ease-in-out"
+  },
+  "accessibility": {
+    "contrast": "Ensure all text against emerald-900 background is white. Use slate-700 or darker for body text.",
+    "focus": "focus:ring-2 focus:ring-emerald-900 focus:ring-offset-1"
+  },
+  "testing": {
+    "attributes": "All interactive elements MUST include 'data-testid' in kebab-case (e.g., 'data-testid=\"submit-member-step-1\"')."
+  },
+  "pages": {
+    "login": {
+      "layout": "Left side: Dark tactical map background with the institutional logo. Right side: Login form in a clean white container.",
+      "title": "FALINTIL-FDTL: Personal Management System (PMS)"
+    },
+    "dashboard": {
+      "layout": "Sidebar (Dark, Slate-900) + Topbar (White) + Content Area (Slate-50).",
+      "widgets": [
+        "Total de Membros (Big Number + Trend)",
+        "Distribuição por Unidade (Bar Chart)",
+        "Distribuição por Sexo (Pie Chart)",
+        "Distribuição por Posto (Horizontal Bar Chart)",
+        "Tipos Sanguíneos (Radar or Pie Chart)"
+      ],
+      "footer": "FALINTIL-FDTL: Divisão de Comunicação e Sistema de Informação @2026"
+    },
+    "registration_form": {
+      "layout": "16 steps. Use a vertical navigation list on the left to show progress. Content on the right.",
+      "steps": [
+        "Dados Pessoais", "Documentos", "Habilitações", "Cursos",
+        "Formação Militar", "Carreira", "Experiência", "Línguas",
+        "Informática", "Situação Disciplinar", "Louvores", "Licenças",
+        "Estado Médico", "Família", "Vestuário", "Equipamentos"
+      ]
+    },
+    "member_lists": {
+      "tabs": ["Ativos", "Falecidos", "Separação de Serviço", "Reservas", "Reformas"],
+      "filters": ["Nome", "NIM", "Posto", "Município"]
+    }
+  },
+  "instructions_to_main_agent": [
+    "Implement the UI primarily using Tailwind CSS and Shadcn components. Use purely .js and .jsx files, NOT .tsx.",
+    "Ensure the layout supports large tables with horizontal scrolling and sticky headers.",
+    "For the 16-step form, implement a robust form state management (e.g., React Hook Form) to handle the massive amount of data.",
+    "PDF generation is a critical requirement. Plan to use a library like 'react-to-pdf' or '@react-pdf/renderer' or raw window.print() styling, and ensure the print layout is styled appropriately, hiding sidebar/nav elements and including the institutional logo.",
+    "Include the required footer: 'FALINTIL-FDTL: Divisão de Comunicação e Sistema de Informação @2026' on the dashboard and printouts.",
+    "DO NOT use Inter or Roboto for headings. Use 'Outfit'. Use 'IBM Plex Sans' for body text.",
+    "Build the 3 access levels (Admin, RH, Superior) logic securely.",
+    "Implement the age calculation logic (60 anos para reforma automática).",
+    "All interactive elements must have a data-testid attribute."
+  ]
+}
