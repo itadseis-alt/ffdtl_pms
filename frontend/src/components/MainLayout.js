@@ -98,6 +98,7 @@ export default function MainLayout({ children }) {
             navigation={filteredNavigation} 
             location={location} 
             onClose={() => setSidebarOpen(false)} 
+            isMobile={true}
           />
         </div>
       </div>
@@ -105,7 +106,7 @@ export default function MainLayout({ children }) {
       {/* Sidebar - Desktop */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64">
         <div className="flex flex-col flex-grow bg-slate-900">
-          <SidebarContent navigation={filteredNavigation} location={location} />
+          <SidebarContent navigation={filteredNavigation} location={location} isMobile={false} />
         </div>
       </div>
 
@@ -249,7 +250,8 @@ export default function MainLayout({ children }) {
   );
 }
 
-function SidebarContent({ navigation, location, onClose }) {
+function SidebarContent({ navigation, location, onClose, isMobile = false }) {
+  const prefix = isMobile ? 'mobile-' : 'desktop-';
   return (
     <div className="flex flex-col h-full">
       {/* Logo */}
@@ -286,7 +288,7 @@ function SidebarContent({ navigation, location, onClose }) {
                   ? 'bg-emerald-900 text-white'
                   : 'text-slate-300 hover:bg-slate-800 hover:text-white'
               }`}
-              data-testid={`nav-${item.name.toLowerCase()}`}
+              data-testid={`${prefix}nav-${item.name.toLowerCase()}`}
             >
               <Icon className="h-5 w-5" />
               {item.name}
