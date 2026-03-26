@@ -15,6 +15,16 @@ import { useReactToPrint } from 'react-to-print';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const LOGO = "https://static.prod-images.emergentagent.com/jobs/c19a0984-e82e-494a-88ed-ca23a6e50af4/images/79d39cdf6f7a79fab98f970d607b22ce980c214e0ef3771881e5abae75ac250c.png";
 
+// Helper to ensure file URLs use the /download endpoint
+const getFileUrl = (url) => {
+  if (!url) return null;
+  if (url.endsWith('/download')) return url;
+  if (url.includes('/api/files/') && !url.includes('/download')) {
+    return `${url}/download`;
+  }
+  return url;
+};
+
 const STATUS_COLORS = {
   'Ativo': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-100',
   'Falecido': 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-100',
@@ -115,7 +125,7 @@ export default function MemberDetailPage() {
       <span className="text-sm text-muted-foreground">{label}</span>
       <span className="text-sm text-foreground font-medium">{value || '-'}</span>
       {anexo && (
-        <a href={anexo} target="_blank" rel="noopener noreferrer" className="text-sm text-emerald-600 hover:underline flex items-center gap-1 print-hide-anexo">
+        <a href={getFileUrl(anexo)} target="_blank" rel="noopener noreferrer" className="text-sm text-emerald-600 hover:underline flex items-center gap-1 print-hide-anexo">
           <FileText className="h-4 w-4" /> Ver Anexo
         </a>
       )}
@@ -134,7 +144,7 @@ export default function MemberDetailPage() {
               ))}
               {item.anexo && (
                 <div className="mt-2 print-hide-anexo">
-                  <a href={item.anexo} target="_blank" rel="noopener noreferrer" className="text-sm text-emerald-600 hover:underline flex items-center gap-1">
+                  <a href={getFileUrl(item.anexo)} target="_blank" rel="noopener noreferrer" className="text-sm text-emerald-600 hover:underline flex items-center gap-1">
                     <FileText className="h-4 w-4" /> {item.anexo_nome || 'Ver Anexo'}
                   </a>
                 </div>
@@ -421,7 +431,7 @@ export default function MemberDetailPage() {
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex-shrink-0 print-hide-photo">
               {member.foto_perfil ? (
-                <img src={member.foto_perfil} alt={member.nome} className="w-32 h-32 rounded-sm object-cover border border-border" />
+                <img src={getFileUrl(member.foto_perfil)} alt={member.nome} className="w-32 h-32 rounded-sm object-cover border border-border" />
               ) : (
                 <div className="w-32 h-32 rounded-sm bg-muted flex items-center justify-center text-muted-foreground text-4xl font-bold border border-border">
                   {member.nome?.charAt(0)}
@@ -484,8 +494,9 @@ export default function MemberDetailPage() {
           <div className="flex items-center justify-between border-b pb-4">
             <img src={LOGO} alt="Logo" className="h-16 w-16" />
             <div className="text-center">
-              <h2 className="text-xl font-bold">FALINTIL-FDTL</h2>
-              <p className="text-sm">Ficha do Membro - {member.nome}</p>
+              <h2 className="text-xl font-bold">FALINTIL-Forças de Defesa de Timor-Leste (F-FDTL)</h2>
+              <p className="text-sm font-semibold">Quartel General</p>
+              <p className="text-sm mt-2">Ficha do Membro - {member.nome}</p>
               <p className="text-xs text-muted-foreground">NIM: {member.nim} | {new Date().toLocaleDateString('pt-PT')}</p>
             </div>
             <div className="w-16"></div>
@@ -701,8 +712,9 @@ export default function MemberDetailPage() {
             <div className="flex items-center justify-between border-b pb-4">
               <img src={LOGO} alt="Logo" className="h-16 w-16" />
               <div className="text-center">
-                <h2 className="text-xl font-bold">FALINTIL-FDTL</h2>
-                <p className="text-sm">Ficha Completa do Membro</p>
+                <h2 className="text-xl font-bold">FALINTIL-Forças de Defesa de Timor-Leste (F-FDTL)</h2>
+                <p className="text-sm font-semibold">Quartel General</p>
+                <p className="text-sm mt-2">Ficha Completa do Membro</p>
                 <p className="text-lg font-semibold">{member.nome}</p>
                 <p className="text-xs">NIM: {member.nim} | {new Date().toLocaleDateString('pt-PT')}</p>
               </div>

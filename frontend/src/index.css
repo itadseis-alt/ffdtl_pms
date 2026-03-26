@@ -240,6 +240,40 @@ input:focus, select:focus, textarea:focus {
   display: none !important;
 }
 
+/* Fix Select/Dropdown text visibility */
+[data-radix-select-content] {
+  background-color: hsl(var(--popover)) !important;
+}
+
+[data-radix-select-content] [data-radix-select-item] {
+  color: hsl(var(--popover-foreground)) !important;
+}
+
+[data-radix-select-content] [data-radix-select-item][data-highlighted] {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+[data-radix-select-content] [data-radix-select-item]:hover {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+/* Ensure popover background */
+[data-radix-popper-content-wrapper] [role="listbox"] {
+  background-color: hsl(var(--popover)) !important;
+}
+
+/* Fix dark mode dropdown */
+.dark [data-radix-select-content] {
+  background-color: hsl(var(--popover)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.dark [data-radix-select-content] [data-radix-select-item] {
+  color: hsl(var(--popover-foreground)) !important;
+}
+
 @layer base {
   [data-debug-wrapper="true"] {
     display: contents !important;

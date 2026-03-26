@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
@@ -17,6 +17,18 @@ import { useReactToPrint } from 'react-to-print';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const LOGO = "https://static.prod-images.emergentagent.com/jobs/c19a0984-e82e-494a-88ed-ca23a6e50af4/images/79d39cdf6f7a79fab98f970d607b22ce980c214e0ef3771881e5abae75ac250c.png";
 
+// Helper to ensure file URLs use the /download endpoint
+const getFileUrl = (url) => {
+  if (!url) return null;
+  // If URL already ends with /download, return as is
+  if (url.endsWith('/download')) return url;
+  // If URL is a file endpoint without /download, add it
+  if (url.includes('/api/files/') && !url.includes('/download')) {
+    return `${url}/download`;
+  }
+  return url;
+};
+
 const STATUS_COLORS = {
   'Ativo': 'bg-emerald-100 text-emerald-800',
   'Falecido': 'bg-slate-200 text-slate-800',
@@ -28,6 +40,7 @@ const STATUS_COLORS = {
 export default function MembersPage() {
   const { canEdit, canDelete } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const printRef = useRef();
   
   const [members, setMembers] = useState([]);
@@ -36,8 +49,11 @@ export default function MembersPage() {
   const [page, setPage] = useState(1);
   const [limit] = useState(20);
   
+  // Get initial status from URL query params or default to 'Ativo'
+  const initialStatus = searchParams.get('status') || 'Ativo';
+  
   // Filters
-  const [statusFilter, setStatusFilter] = useState('Ativo');
+  const [statusFilter, setStatusFilter] = useState(initialStatus);
   const [searchNome, setSearchNome] = useState('');
   const [searchNim, setSearchNim] = useState('');
   const [postoFilter, setPostoFilter] = useState('');
@@ -53,6 +69,15 @@ export default function MembersPage() {
   
   // Status change dialog
   const [statusDialog, setStatusDialog] = useState({ open: false, member: null, newStatus: '' });
+
+  // Update filter when URL changes
+  useEffect(() => {
+    const urlStatus = searchParams.get('status');
+    if (urlStatus && urlStatus !== statusFilter) {
+      setStatusFilter(urlStatus);
+      setPage(1);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     fetchConstants();
@@ -252,8 +277,9 @@ export default function MembersPage() {
           <div className="flex items-center justify-between border-b pb-4">
             <img src={LOGO} alt="Logo" className="h-16 w-16" />
             <div className="text-center">
-              <h2 className="text-xl font-bold">FALINTIL-FDTL</h2>
-              <p className="text-sm">Lista de Membros - {statusFilter}</p>
+              <h2 className="text-xl font-bold">FALINTIL-Forças de Defesa de Timor-Leste (F-FDTL)</h2>
+              <p className="text-sm font-semibold">Quartel General</p>
+              <p className="text-sm mt-2">Lista de Membros - {statusFilter}</p>
               <p className="text-xs text-slate-500">{new Date().toLocaleDateString('pt-PT')}</p>
             </div>
             <div className="w-16"></div>
@@ -293,7 +319,7 @@ export default function MembersPage() {
                     <TableRow key={member.member_id} className="hover:bg-slate-50">
                       <TableCell>
                         {member.foto_perfil ? (
-                          <img src={member.foto_perfil} alt={member.nome} className="w-10 h-10 rounded-full object-cover" />
+                          <img src={getFileUrl(member.foto_perfil)} alt={member.nome} className="w-10 h-10 rounded-full object-cover" />
                         ) : (
                           <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-sm">
                             {member.nome?.charAt(0)}

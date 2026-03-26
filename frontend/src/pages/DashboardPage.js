@@ -114,70 +114,90 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards - Clickable */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <Card className="border border-slate-200 rounded-sm shadow-none card-hover" data-testid="stat-total">
+        <Card 
+          className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-emerald-500 transition-colors" 
+          data-testid="stat-total"
+          onClick={() => navigate('/members')}
+        >
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wide">Total Membros</p>
-                <p className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">Total Membros</p>
+                <p className="text-2xl font-bold text-foreground" style={{ fontFamily: 'Outfit, sans-serif' }}>
                   {stats?.total || 0}
                 </p>
               </div>
-              <Users className="h-8 w-8 text-emerald-900" />
+              <Users className="h-8 w-8 text-emerald-700 dark:text-emerald-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-slate-200 rounded-sm shadow-none card-hover" data-testid="stat-ativos">
+        <Card 
+          className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-emerald-500 transition-colors" 
+          data-testid="stat-ativos"
+          onClick={() => navigate('/members?status=Ativo')}
+        >
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wide">Ativos</p>
-                <p className="text-2xl font-bold text-emerald-600" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">Ativos</p>
+                <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
                   {stats?.por_status?.ativos || 0}
                 </p>
               </div>
-              <UserCheck className="h-8 w-8 text-emerald-600" />
+              <UserCheck className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-slate-200 rounded-sm shadow-none card-hover" data-testid="stat-falecidos">
+        <Card 
+          className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-slate-500 transition-colors" 
+          data-testid="stat-falecidos"
+          onClick={() => navigate('/members?status=Falecido')}
+        >
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wide">Falecidos</p>
-                <p className="text-2xl font-bold text-slate-600" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">Falecidos</p>
+                <p className="text-2xl font-bold text-slate-600 dark:text-slate-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
                   {stats?.por_status?.falecidos || 0}
                 </p>
               </div>
-              <Heart className="h-8 w-8 text-slate-600" />
+              <Heart className="h-8 w-8 text-slate-600 dark:text-slate-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-slate-200 rounded-sm shadow-none card-hover" data-testid="stat-separacao">
+        <Card 
+          className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-amber-500 transition-colors" 
+          data-testid="stat-separacao"
+          onClick={() => navigate('/members?status=Separação do Serviço')}
+        >
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wide">Separação</p>
-                <p className="text-2xl font-bold text-amber-600" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">Separação</p>
+                <p className="text-2xl font-bold text-amber-600 dark:text-amber-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
                   {stats?.por_status?.separacao || 0}
                 </p>
               </div>
-              <UserX className="h-8 w-8 text-amber-600" />
+              <UserX className="h-8 w-8 text-amber-600 dark:text-amber-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-slate-200 rounded-sm shadow-none card-hover" data-testid="stat-reserva">
+        <Card 
+          className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-blue-500 transition-colors" 
+          data-testid="stat-reserva"
+          onClick={() => navigate('/members?status=Reserva')}
+        >
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wide">Reserva</p>
-                <p className="text-2xl font-bold text-blue-600" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">Reserva</p>
+                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
                   {stats?.por_status?.reserva || 0}
                 </p>
               </div>
@@ -186,16 +206,20 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="border border-slate-200 rounded-sm shadow-none card-hover" data-testid="stat-reforma">
+        <Card 
+          className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-purple-500 transition-colors" 
+          data-testid="stat-reforma"
+          onClick={() => navigate('/members?status=Reforma')}
+        >
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wide">Reforma</p>
-                <p className="text-2xl font-bold text-purple-600" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">Reforma</p>
+                <p className="text-2xl font-bold text-purple-600 dark:text-purple-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
                   {stats?.por_status?.reforma || 0}
                 </p>
               </div>
-              <Award className="h-8 w-8 text-purple-600" />
+              <Award className="h-8 w-8 text-purple-600 dark:text-purple-400" />
             </div>
           </CardContent>
         </Card>

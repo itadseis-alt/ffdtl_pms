@@ -13,6 +13,16 @@ import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+// Helper to ensure file URLs use the /download endpoint
+const getFileUrl = (url) => {
+  if (!url) return null;
+  if (url.endsWith('/download')) return url;
+  if (url.includes('/api/files/') && !url.includes('/download')) {
+    return `${url}/download`;
+  }
+  return url;
+};
+
 const STEPS = [
   'Dados Pessoais', 'Documentos', 'Habilitações', 'Cursos Informais',
   'Formação Militar', 'Carreira', 'Experiência de Serviço', 'Habilidade de Língua',
@@ -198,7 +208,8 @@ export default function MemberFormPage() {
       const response = await axios.post(`${API}/upload`, formDataUpload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      handleInputChange(field, `${API}/files/${response.data.file_id}`);
+      // Use download URL for viewing files
+      handleInputChange(field, `${API}/files/${response.data.file_id}/download`);
       if (nameField) {
         handleInputChange(nameField, file.name);
       }
@@ -221,7 +232,8 @@ export default function MemberFormPage() {
       const response = await axios.post(`${API}/upload`, formDataUpload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      handleArrayChange(arrayField, index, 'anexo', `${API}/files/${response.data.file_id}`);
+      // Use download URL for viewing files
+      handleArrayChange(arrayField, index, 'anexo', `${API}/files/${response.data.file_id}/download`);
       handleArrayChange(arrayField, index, 'anexo_nome', file.name);
       toast.success('Arquivo enviado com sucesso');
     } catch (error) {
@@ -273,7 +285,7 @@ export default function MemberFormPage() {
         <div className="flex items-center gap-2 p-2 border border-border rounded-sm bg-muted/50">
           <FileText className="h-4 w-4 text-emerald-600" />
           <span className="text-sm text-foreground flex-1 truncate">{fileName || 'Documento anexado'}</span>
-          <a href={value} target="_blank" rel="noopener noreferrer" className="text-emerald-600 text-sm hover:underline">
+          <a href={getFileUrl(value)} target="_blank" rel="noopener noreferrer" className="text-emerald-600 text-sm hover:underline">
             Ver
           </a>
           <Button variant="ghost" size="sm" onClick={() => clearFile(field, nameField)} className="h-6 w-6 p-0">
@@ -309,7 +321,7 @@ export default function MemberFormPage() {
           <div className="flex items-center gap-2 p-2 border border-border rounded-sm bg-muted/50">
             <FileText className="h-4 w-4 text-emerald-600" />
             <span className="text-sm text-foreground flex-1 truncate">{item.anexo_nome || 'Documento anexado'}</span>
-            <a href={item.anexo} target="_blank" rel="noopener noreferrer" className="text-emerald-600 text-sm hover:underline">
+            <a href={getFileUrl(item.anexo)} target="_blank" rel="noopener noreferrer" className="text-emerald-600 text-sm hover:underline">
               Ver
             </a>
             <Button variant="ghost" size="sm" onClick={() => {
@@ -540,7 +552,7 @@ export default function MemberFormPage() {
                   fileName={formData.foto_perfil_nome}
                 />
                 {formData.foto_perfil && (
-                  <img src={formData.foto_perfil} alt="Preview" className="w-24 h-24 object-cover rounded-sm mt-2" />
+                  <img src={getFileUrl(formData.foto_perfil)} alt="Preview" className="w-24 h-24 object-cover rounded-sm mt-2" />
                 )}
               </div>
             </div>

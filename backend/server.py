@@ -629,11 +629,30 @@ async def upload_file(file: UploadFile = File(...), current_user = Depends(requi
     return {"file_id": file_id, "filename": file.filename}
 
 @api_router.get("/files/{file_id}")
-async def get_file(file_id: str, current_user = Depends(get_current_user)):
+async def get_file(file_id: str):
+    """Get file metadata - public endpoint"""
     file_doc = await db.files.find_one({"file_id": file_id}, {"_id": 0})
     if not file_doc:
         raise HTTPException(status_code=404, detail="Arquivo não encontrado")
     return file_doc
+
+@api_router.get("/files/{file_id}/download")
+async def download_file(file_id: str):
+    """Download file directly - public endpoint for viewing"""
+    from fastapi.responses import Response
+    
+    file_doc = await db.files.find_one({"file_id": file_id}, {"_id": 0})
+    if not file_doc:
+        raise HTTPException(status_code=404, detail="Arquivo não encontrado")
+    
+    content = base64.b64decode(file_doc["content"])
+    return Response(
+        content=content,
+        media_type=file_doc.get("content_type", "application/octet-stream"),
+        headers={
+            "Content-Disposition": f'inline; filename="{file_doc["filename"]}"'
+        }
+    )
 
 # ==================== BACKUP ====================
 @api_router.post("/backup")
