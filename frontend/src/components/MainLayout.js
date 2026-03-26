@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -10,7 +11,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { 
   LayoutDashboard, Users, UserCog, Bell, LogOut, Menu, X, ChevronDown, Key, User,
-  Database, Settings, Shield
+  Database, Settings, Shield, Sun, Moon
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -19,6 +20,7 @@ const LOGO = "https://static.prod-images.emergentagent.com/jobs/c19a0984-e82e-49
 
 export default function MainLayout({ children }) {
   const { user, logout, changePassword, isAdmin, isRH, isSuperior } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -86,14 +88,14 @@ export default function MainLayout({ children }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       {/* Sidebar - Mobile */}
       <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? '' : 'pointer-events-none'}`}>
         <div 
           className={`fixed inset-0 bg-slate-900/50 transition-opacity ${sidebarOpen ? 'opacity-100' : 'opacity-0'}`}
           onClick={() => setSidebarOpen(false)}
         />
-        <div className={`fixed inset-y-0 left-0 w-64 bg-slate-900 transform transition-transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className={`fixed inset-y-0 left-0 w-64 bg-slate-900 dark:bg-slate-950 transform transition-transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           <SidebarContent 
             navigation={filteredNavigation} 
             location={location} 
@@ -105,7 +107,7 @@ export default function MainLayout({ children }) {
 
       {/* Sidebar - Desktop */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64">
-        <div className="flex flex-col flex-grow bg-slate-900">
+        <div className="flex flex-col flex-grow bg-slate-900 dark:bg-slate-950">
           <SidebarContent navigation={filteredNavigation} location={location} isMobile={false} />
         </div>
       </div>
@@ -113,11 +115,11 @@ export default function MainLayout({ children }) {
       {/* Main Content */}
       <div className="lg:pl-64">
         {/* Top Bar */}
-        <header className="sticky top-0 z-40 bg-white border-b border-slate-200">
+        <header className="sticky top-0 z-40 bg-background border-b border-border">
           <div className="flex items-center justify-between h-16 px-4 sm:px-6">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 text-slate-500 hover:text-slate-900"
+              className="lg:hidden p-2 text-muted-foreground hover:text-foreground"
             >
               <Menu className="h-6 w-6" />
             </button>
@@ -125,11 +127,25 @@ export default function MainLayout({ children }) {
             <div className="flex-1 lg:flex-none" />
 
             <div className="flex items-center gap-4">
+              {/* Theme Toggle */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleTheme}
+                data-testid="theme-toggle"
+              >
+                {theme === 'light' ? (
+                  <Moon className="h-5 w-5 text-muted-foreground" />
+                ) : (
+                  <Sun className="h-5 w-5 text-muted-foreground" />
+                )}
+              </Button>
+
               {/* Notifications */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="relative" data-testid="notifications-button">
-                    <Bell className="h-5 w-5 text-slate-500" />
+                    <Bell className="h-5 w-5 text-muted-foreground" />
                     {unreadCount > 0 && (
                       <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                         {unreadCount}
@@ -138,18 +154,18 @@ export default function MainLayout({ children }) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-80">
-                  <div className="px-3 py-2 border-b border-slate-200">
-                    <h4 className="font-semibold text-slate-900">Notificações</h4>
+                  <div className="px-3 py-2 border-b border-border">
+                    <h4 className="font-semibold text-foreground">Notificações</h4>
                   </div>
                   {notifications.length === 0 ? (
-                    <div className="px-3 py-4 text-center text-slate-500 text-sm">
+                    <div className="px-3 py-4 text-center text-muted-foreground text-sm">
                       Nenhuma notificação
                     </div>
                   ) : (
                     notifications.map((notif) => (
                       <DropdownMenuItem key={notif.notification_id} className="flex flex-col items-start p-3">
-                        <span className="font-medium text-slate-900">{notif.titulo}</span>
-                        <span className="text-sm text-slate-500">{notif.mensagem}</span>
+                        <span className="font-medium text-foreground">{notif.titulo}</span>
+                        <span className="text-sm text-muted-foreground">{notif.mensagem}</span>
                       </DropdownMenuItem>
                     ))
                   )}
@@ -160,20 +176,20 @@ export default function MainLayout({ children }) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center gap-2" data-testid="user-menu-button">
-                    <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-800 font-medium">
+                    <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center text-emerald-800 dark:text-emerald-100 font-medium">
                       {user?.nome?.charAt(0)}
                     </div>
                     <div className="hidden sm:block text-left">
-                      <p className="text-sm font-medium text-slate-900">{user?.nome}</p>
-                      <p className="text-xs text-slate-500">{getRoleName(user?.role)}</p>
+                      <p className="text-sm font-medium text-foreground">{user?.nome}</p>
+                      <p className="text-xs text-muted-foreground">{getRoleName(user?.role)}</p>
                     </div>
-                    <ChevronDown className="h-4 w-4 text-slate-400" />
+                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
-                  <div className="px-3 py-2 border-b border-slate-200">
-                    <p className="font-medium text-slate-900">{user?.nome} {user?.sobrenome}</p>
-                    <p className="text-sm text-slate-500">{user?.email}</p>
+                  <div className="px-3 py-2 border-b border-border">
+                    <p className="font-medium text-foreground">{user?.nome} {user?.sobrenome}</p>
+                    <p className="text-sm text-muted-foreground">{user?.email}</p>
                   </div>
                   <DropdownMenuItem onClick={() => setPasswordDialog(true)} data-testid="change-password-menu">
                     <Key className="h-4 w-4 mr-2" /> Alterar Senha
@@ -194,8 +210,8 @@ export default function MainLayout({ children }) {
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-slate-200 py-4 px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs text-slate-500">
+        <footer className="border-t border-border py-4 px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-xs text-muted-foreground">
             FALINTIL-FDTL: Divisão de Comunicação e Sistema de Informação @2026
           </p>
         </footer>

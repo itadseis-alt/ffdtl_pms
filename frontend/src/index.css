@@ -67,6 +67,28 @@ code {
     --chart-4: 199 89% 48%;
     --chart-5: 215 16% 47%;
   }
+
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 45 93% 47%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 25%;
+    --input: 217 33% 25%;
+    --ring: 160 84% 39%;
+  }
 }
 
 @layer base {
@@ -88,9 +110,17 @@ code {
   background: #f1f5f9;
 }
 
+.dark ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -108,13 +138,22 @@ code {
   }
   
   body {
-    background: white;
+    background: white !important;
+    color: black !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
   
   .print-break {
     page-break-before: always;
+  }
+  
+  .print-hide-photo {
+    display: none !important;
+  }
+  
+  .print-hide-anexo {
+    display: none !important;
   }
 }
 
@@ -137,6 +176,10 @@ code {
 /* Table styles */
 .table-striped tbody tr:nth-child(odd) {
   background-color: rgba(248, 250, 252, 0.5);
+}
+
+.dark .table-striped tbody tr:nth-child(odd) {
+  background-color: rgba(30, 41, 59, 0.5);
 }
 
 /* Animation */
@@ -164,11 +207,37 @@ code {
   border-color: #cbd5e1;
 }
 
+.dark .card-hover:hover {
+  border-color: #475569;
+}
+
 /* Focus styles */
 input:focus, select:focus, textarea:focus {
   outline: none;
   ring: 2px;
   ring-color: var(--primary);
+}
+
+/* Custom file input */
+.file-input-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.file-input-wrapper input[type=file] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+/* Hide external badge */
+#emergent-badge {
+  display: none !important;
 }
 
 @layer base {

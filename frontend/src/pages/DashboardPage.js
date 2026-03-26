@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Users, UserCheck, UserX, Heart, Shield, Award } from 'lucide-react';
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
+import { Users, UserCheck, UserX, Heart, Shield, Award, AlertTriangle, Bell } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -12,15 +16,18 @@ const COLORS = ['#064e3b', '#065f46', '#047857', '#059669', '#10b981', '#34d399'
 const PIE_COLORS = ['#064e3b', '#ca8a04'];
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, canEdit } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [filterUnidade, setFilterUnidade] = useState('all');
   const [unidades, setUnidades] = useState([]);
+  const [retirementAlerts, setRetirementAlerts] = useState([]);
 
   useEffect(() => {
     fetchStats();
     fetchUnidades();
+    fetchRetirementAlerts();
   }, []);
 
   const fetchStats = async () => {
@@ -40,6 +47,26 @@ export default function DashboardPage() {
       setUnidades(response.data);
     } catch (error) {
       console.error('Error fetching unidades:', error);
+    }
+  };
+
+  const fetchRetirementAlerts = async () => {
+    try {
+      const response = await axios.get(`${API}/members/retirement-alerts`);
+      setRetirementAlerts(response.data.alerts);
+    } catch (error) {
+      console.error('Error fetching retirement alerts:', error);
+    }
+  };
+
+  const handleCheckRetirement = async () => {
+    try {
+      const response = await axios.post(`${API}/members/check-retirement`);
+      toast.success(response.data.message);
+      fetchStats();
+      fetchRetirementAlerts();
+    } catch (error) {
+      toast.error('Erro ao verificar reformas');
     }
   };
 
@@ -174,14 +201,66 @@ export default function DashboardPage() {
         </Card>
       </div>
 
+      {/* Retirement Alerts */}
+      {retirementAlerts.length > 0 && (
+        <Card className="border border-amber-200 dark:border-amber-800 rounded-sm shadow-none bg-amber-50 dark:bg-amber-950" data-testid="retirement-alerts">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg text-amber-800 dark:text-amber-200 flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <AlertTriangle className="h-5 w-5" />
+                Alertas de Reforma ({retirementAlerts.length})
+              </CardTitle>
+              {canEdit && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleCheckRetirement}
+                  className="border-amber-600 text-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900"
+                  data-testid="check-retirement-button"
+                >
+                  Verificar Reformas
+                </Button>
+              )}
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-amber-700 dark:text-amber-300 mb-3">
+              Membros próximos da idade de reforma (58-59 anos):
+            </p>
+            <div className="space-y-2">
+              {retirementAlerts.slice(0, 5).map((alert) => (
+                <div 
+                  key={alert.member_id} 
+                  className="flex items-center justify-between p-2 bg-white dark:bg-slate-900 rounded-sm border border-amber-200 dark:border-amber-800 cursor-pointer hover:bg-amber-100 dark:hover:bg-amber-900 transition-colors"
+                  onClick={() => navigate(`/members/${alert.member_id}`)}
+                >
+                  <div>
+                    <p className="font-medium text-foreground">{alert.nome}</p>
+                    <p className="text-sm text-muted-foreground">NIM: {alert.nim} | {alert.posto}</p>
+                  </div>
+                  <Badge className="bg-amber-500 text-white">
+                    {alert.idade} anos ({alert.anos_para_reforma} ano(s) para reforma)
+                  </Badge>
+                </div>
+              ))}
+              {retirementAlerts.length > 5 && (
+                <p className="text-sm text-amber-600 dark:text-amber-400 text-center mt-2">
+                  E mais {retirementAlerts.length - 5} membro(s)...
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Gender Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="border border-slate-200 rounded-sm shadow-none" data-testid="stat-masculino">
+        <Card className="border border-border rounded-sm shadow-none" data-testid="stat-masculino">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wide">Masculino</p>
-                <p className="text-3xl font-bold text-emerald-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">Masculino</p>
+                <p className="text-3xl font-bold text-emerald-700 dark:text-emerald-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
                   {stats?.por_sexo?.masculino || 0}
                 </p>
               </div>
@@ -190,12 +269,12 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="border border-slate-200 rounded-sm shadow-none" data-testid="stat-feminino">
+        <Card className="border border-border rounded-sm shadow-none" data-testid="stat-feminino">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wide">Feminino</p>
-                <p className="text-3xl font-bold text-amber-600" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">Feminino</p>
+                <p className="text-3xl font-bold text-amber-600 dark:text-amber-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
                   {stats?.por_sexo?.feminino || 0}
                 </p>
               </div>

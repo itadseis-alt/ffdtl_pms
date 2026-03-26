@@ -48,7 +48,7 @@ POSTOS = {
 }
 
 UNIDADES = [
-    "Unidade Apoio Quartel General", "Componente Força Terrestre (CFT)", "Componente Força Naval (CFN)",
+    "Quartel General", "Componente Força Terrestre (CFT)", "Componente Força Naval (CFN)",
     "Componente Aérea Ligeira (CAL)", "Força Apoio Geral (FAG)", "Unidade Apoio Serviço (UAS)",
     "Centro de Instrução do Comandante Nicolau Lobato (CICNL)", "Unidade de Polícia Militar (PM)",
     "Unidade FALINTIL (UF)", "1º Batalhão da CFT", "2º Batalhão da CFT", "Companhia de Transmissões",
@@ -338,6 +338,69 @@ async def delete_user(user_id: str, current_user = Depends(require_role(["admin"
     return {"message": "Usuário excluído com sucesso"}
 
 # ==================== MEMBER MANAGEMENT ====================
+# Rotas específicas primeiro (antes das rotas com parâmetros)
+@api_router.get("/members/retirement-alerts")
+async def get_retirement_alerts(current_user = Depends(get_current_user)):
+    """Get members who are approaching retirement age (58-59 years old)"""
+    alerts = []
+    
+    # Find active members
+    active_members = await db.members.find({"status": "Ativo"}, {"_id": 0}).to_list(20000)
+    
+    for member in active_members:
+        age = calculate_age(member.get("data_nascimento", ""))
+        if 58 <= age < 60:
+            years_to_retirement = 60 - age
+            alerts.append({
+                "member_id": member["member_id"],
+                "nome": member["nome"],
+                "nim": member["nim"],
+                "idade": age,
+                "anos_para_reforma": years_to_retirement,
+                "data_nascimento": member["data_nascimento"],
+                "unidade": member.get("unidade"),
+                "posto": member.get("posto")
+            })
+    
+    return {"total": len(alerts), "alerts": alerts}
+
+@api_router.post("/members/check-retirement")
+async def check_and_update_retirement(current_user = Depends(require_role(["admin", "rh"]))):
+    """Check and automatically update members who reached retirement age"""
+    updated_count = 0
+    
+    # Find active members
+    active_members = await db.members.find({"status": "Ativo"}, {"_id": 0}).to_list(20000)
+    
+    for member in active_members:
+        age = calculate_age(member.get("data_nascimento", ""))
+        if age >= 60:
+            await db.members.update_one(
+                {"member_id": member["member_id"]},
+                {"$set": {
+                    "status": "Reforma",
+                    "status_changed_at": datetime.now(timezone.utc).isoformat(),
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                }}
+            )
+            updated_count += 1
+            
+            # Create notification for admins
+            admin_users = await db.users.find({"role": "admin"}, {"_id": 0}).to_list(100)
+            for admin in admin_users:
+                notif_doc = {
+                    "notification_id": str(uuid.uuid4()),
+                    "user_id": admin["user_id"],
+                    "titulo": "Membro Reformado Automaticamente",
+                    "mensagem": f"O membro {member['nome']} (NIM: {member['nim']}) foi movido para Reforma por completar 60 anos.",
+                    "tipo": "warning",
+                    "lida": False,
+                    "created_at": datetime.now(timezone.utc).isoformat()
+                }
+                await db.notifications.insert_one(notif_doc)
+    
+    return {"message": f"{updated_count} membro(s) atualizado(s) para Reforma"}
+
 @api_router.post("/members")
 async def create_member(member_data: MemberCreate, current_user = Depends(require_role(["admin", "rh"]))):
     existing = await db.members.find_one({"nim": member_data.nim})
