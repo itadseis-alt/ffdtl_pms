@@ -71,6 +71,9 @@ export default function MemberFormPage() {
     data_nascimento: '', naturalidade: '', estado_civil: '', residencia_atual: '',
     municipio: '', nacionalidade: '', numero_contacto: '', email: '', tipo_sanguineo: '',
     foto_perfil: '', foto_perfil_nome: '', status: 'Ativo',
+    // Novos campos
+    ano_incorporacao: '', data_promocao: '', posto_promovido: '',
+    status_escolaridade: '', status_licenca: 'Em Serviço',
     
     // Step 2: Documentos
     payroll_no: '', payroll_anexo: '', payroll_anexo_nome: '',
@@ -124,6 +127,15 @@ export default function MemberFormPage() {
     // Step 16: Equipamentos
     equipamentos: [], entregas_equipamentos: []
   });
+  
+  // Novos estados para constantes
+  const [statusEscolaridade, setStatusEscolaridade] = useState([]);
+  const [statusLicencaOptions, setStatusLicencaOptions] = useState([]);
+  const [postosPromocao, setPostosPromocao] = useState([]);
+  const [postosSemPromocao, setPostosSemPromocao] = useState([]);
+  
+  // Verificar se o posto atual permite promoção
+  const postoPermitePromocao = !postosSemPromocao.includes(formData.posto);
 
   useEffect(() => {
     fetchConstants();
@@ -135,7 +147,8 @@ export default function MemberFormPage() {
   const fetchConstants = async () => {
     try {
       const [postosRes, unidadesRes, municipiosRes, estadoCivilRes, tiposSanguineosRes, 
-             grausEstudoRes, tiposPunicaoRes, tiposLicencaRes, cartaoConducaoRes] = await Promise.all([
+             grausEstudoRes, tiposPunicaoRes, tiposLicencaRes, cartaoConducaoRes,
+             statusEscolaridadeRes, statusLicencaRes, postosPromocaoRes, postosSemPromocaoRes] = await Promise.all([
         axios.get(`${API}/constants/postos`),
         axios.get(`${API}/constants/unidades`),
         axios.get(`${API}/constants/municipios`),
@@ -144,7 +157,11 @@ export default function MemberFormPage() {
         axios.get(`${API}/constants/graus-estudo`),
         axios.get(`${API}/constants/tipos-punicao`),
         axios.get(`${API}/constants/tipos-licenca`),
-        axios.get(`${API}/constants/cartao-conducao`)
+        axios.get(`${API}/constants/cartao-conducao`),
+        axios.get(`${API}/constants/status-escolaridade`),
+        axios.get(`${API}/constants/status-licenca`),
+        axios.get(`${API}/constants/postos-promocao`),
+        axios.get(`${API}/constants/postos-sem-promocao`)
       ]);
       setPostos(postosRes.data);
       setUnidades(unidadesRes.data);
@@ -155,6 +172,10 @@ export default function MemberFormPage() {
       setTiposPunicao(tiposPunicaoRes.data);
       setTiposLicenca(tiposLicencaRes.data);
       setCartaoConducao(cartaoConducaoRes.data);
+      setStatusEscolaridade(statusEscolaridadeRes.data);
+      setStatusLicencaOptions(statusLicencaRes.data);
+      setPostosPromocao(postosPromocaoRes.data);
+      setPostosSemPromocao(postosSemPromocaoRes.data);
     } catch (error) {
       console.error('Error fetching constants:', error);
     }
@@ -555,6 +576,88 @@ export default function MemberFormPage() {
                   <img src={getFileUrl(formData.foto_perfil)} alt="Preview" className="w-24 h-24 object-cover rounded-sm mt-2" />
                 )}
               </div>
+              
+              {/* Novos campos */}
+              <div className="md:col-span-2 border-t border-border pt-4 mt-2">
+                <h4 className="font-medium text-foreground mb-4">Informações Adicionais</h4>
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="text-foreground">Ano de Incorporação *</Label>
+                <Input 
+                  type="number" 
+                  min="1975" 
+                  max={new Date().getFullYear()} 
+                  placeholder="Ex: 2010"
+                  value={formData.ano_incorporacao} 
+                  onChange={(e) => handleInputChange('ano_incorporacao', e.target.value)} 
+                  className="rounded-sm" 
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="text-foreground">Status de Escolaridade</Label>
+                <Select value={formData.status_escolaridade} onValueChange={(value) => handleInputChange('status_escolaridade', value)}>
+                  <SelectTrigger className="rounded-sm">
+                    <SelectValue placeholder="Selecione a escolaridade" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {statusEscolaridade.map((se) => (
+                      <SelectItem key={se} value={se}>{se}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="text-foreground">Status de Licença (Situação Atual) *</Label>
+                <Select value={formData.status_licenca || 'Em Serviço'} onValueChange={(value) => handleInputChange('status_licenca', value)}>
+                  <SelectTrigger className="rounded-sm">
+                    <SelectValue placeholder="Selecione o status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {statusLicencaOptions.map((sl) => (
+                      <SelectItem key={sl} value={sl}>{sl}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* Campos de Promoção - aparecem apenas se o posto permitir */}
+              {postoPermitePromocao && formData.posto && (
+                <>
+                  <div className="md:col-span-2 border-t border-border pt-4 mt-2">
+                    <h4 className="font-medium text-foreground mb-4">Dados de Promoção</h4>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Preencha os dados abaixo se o membro foi promovido
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-foreground">Data de Promoção</Label>
+                    <Input 
+                      type="date" 
+                      value={formData.data_promocao} 
+                      onChange={(e) => handleInputChange('data_promocao', e.target.value)} 
+                      className="rounded-sm" 
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-foreground">Posto Promovido</Label>
+                    <Select value={formData.posto_promovido} onValueChange={(value) => handleInputChange('posto_promovido', value)}>
+                      <SelectTrigger className="rounded-sm">
+                        <SelectValue placeholder="Selecione o posto" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {postosPromocao.map((pp) => (
+                          <SelectItem key={pp} value={pp}>{pp}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              )}
             </div>
           )}
 

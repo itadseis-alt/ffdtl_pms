@@ -225,6 +225,103 @@ export default function DashboardPage() {
         </Card>
       </div>
 
+      {/* Status de Licença Cards */}
+      <div className="mt-4">
+        <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">Status de Licença</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+          <Card 
+            className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-green-500 transition-colors" 
+            data-testid="stat-em-servico"
+            onClick={() => navigate('/members?status_licenca=Em Serviço')}
+          >
+            <CardContent className="p-3">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Em Serviço</p>
+              <p className="text-xl font-bold text-green-600 dark:text-green-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                {stats?.por_status_licenca?.em_servico || 0}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-orange-500 transition-colors" 
+            data-testid="stat-licenca-sem-vencimento"
+            onClick={() => navigate('/members?status_licenca=Licença Sem Vencimento')}
+          >
+            <CardContent className="p-3">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Lic. Sem Vencimento</p>
+              <p className="text-xl font-bold text-orange-600 dark:text-orange-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                {stats?.por_status_licenca?.licenca_sem_vencimento || 0}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-red-500 transition-colors" 
+            data-testid="stat-licenca-junta-medica"
+            onClick={() => navigate('/members?status_licenca=Licença Junta Médica')}
+          >
+            <CardContent className="p-3">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Lic. Junta Médica</p>
+              <p className="text-xl font-bold text-red-600 dark:text-red-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                {stats?.por_status_licenca?.licenca_junta_medica || 0}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-pink-500 transition-colors" 
+            data-testid="stat-licenca-partos"
+            onClick={() => navigate('/members?status_licenca=Licença de Partos')}
+          >
+            <CardContent className="p-3">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Lic. de Partos</p>
+              <p className="text-xl font-bold text-pink-600 dark:text-pink-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                {stats?.por_status_licenca?.licenca_partos || 0}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-indigo-500 transition-colors" 
+            data-testid="stat-licenca-estudo"
+            onClick={() => navigate('/members?status_licenca=Licença de Estudo')}
+          >
+            <CardContent className="p-3">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Lic. de Estudo</p>
+              <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                {stats?.por_status_licenca?.licenca_estudo || 0}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-cyan-500 transition-colors" 
+            data-testid="stat-curso-exterior"
+            onClick={() => navigate('/members?status_licenca=Curso no Exterior')}
+          >
+            <CardContent className="p-3">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Curso Exterior</p>
+              <p className="text-xl font-bold text-cyan-600 dark:text-cyan-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                {stats?.por_status_licenca?.curso_exterior || 0}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-teal-500 transition-colors" 
+            data-testid="stat-curso-interior"
+            onClick={() => navigate('/members?status_licenca=Curso no Interior')}
+          >
+            <CardContent className="p-3">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Curso Interior</p>
+              <p className="text-xl font-bold text-teal-600 dark:text-teal-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                {stats?.por_status_licenca?.curso_interior || 0}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
       {/* Retirement Alerts */}
       {retirementAlerts.length > 0 && (
         <Card className="border border-amber-200 dark:border-amber-800 rounded-sm shadow-none bg-amber-50 dark:bg-amber-950" data-testid="retirement-alerts">

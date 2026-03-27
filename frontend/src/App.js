@@ -11,6 +11,7 @@ import MemberDetailPage from "./pages/MemberDetailPage";
 import MemberFormPage from "./pages/MemberFormPage";
 import UsersPage from "./pages/UsersPage";
 import BackupPage from "./pages/BackupPage";
+import ActivityLogsPage from "./pages/ActivityLogsPage";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading, token } = useAuth();
@@ -116,6 +117,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={['admin']}>
             <BackupPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/activity-logs"
+        element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <ActivityLogsPage />
           </ProtectedRoute>
         }
       />

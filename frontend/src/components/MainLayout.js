@@ -11,7 +11,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { 
   LayoutDashboard, Users, UserCog, Bell, LogOut, Menu, X, ChevronDown, Key, User,
-  Database, Settings, Shield, Sun, Moon
+  Database, Settings, Shield, Sun, Moon, Activity
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -78,6 +78,7 @@ export default function MainLayout({ children }) {
     { name: 'Membros', href: '/members', icon: Users, roles: ['admin', 'rh', 'superior'] },
     { name: 'Usuários', href: '/users', icon: UserCog, roles: ['admin'] },
     { name: 'Backup', href: '/backup', icon: Database, roles: ['admin'] },
+    { name: 'Logs de Atividade', href: '/activity-logs', icon: Activity, roles: ['admin'] },
   ];
 
   const filteredNavigation = navigation.filter(item => item.roles.includes(user?.role));

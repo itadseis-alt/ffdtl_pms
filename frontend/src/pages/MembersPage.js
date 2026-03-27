@@ -49,20 +49,27 @@ export default function MembersPage() {
   const [page, setPage] = useState(1);
   const [limit] = useState(20);
   
-  // Get initial status from URL query params or default to 'Ativo'
+  // Get initial status from URL query params
   const initialStatus = searchParams.get('status') || 'Ativo';
+  const initialStatusLicenca = searchParams.get('status_licenca') || '';
   
   // Filters
   const [statusFilter, setStatusFilter] = useState(initialStatus);
+  const [statusLicencaFilter, setStatusLicencaFilter] = useState(initialStatusLicenca);
   const [searchNome, setSearchNome] = useState('');
   const [searchNim, setSearchNim] = useState('');
   const [postoFilter, setPostoFilter] = useState('');
   const [municipioFilter, setMunicipioFilter] = useState('');
+  const [unidadeFilter, setUnidadeFilter] = useState('');
+  const [anoIncorporacaoFilter, setAnoIncorporacaoFilter] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   
   // Constants
   const [postos, setPostos] = useState({});
   const [municipios, setMunicipios] = useState([]);
+  const [unidades, setUnidades] = useState([]);
+  const [anosIncorporacao, setAnosIncorporacao] = useState([]);
+  const [statusLicencaOptions, setStatusLicencaOptions] = useState([]);
   
   // Delete dialog
   const [deleteDialog, setDeleteDialog] = useState({ open: false, member: null });
@@ -73,8 +80,15 @@ export default function MembersPage() {
   // Update filter when URL changes
   useEffect(() => {
     const urlStatus = searchParams.get('status');
+    const urlStatusLicenca = searchParams.get('status_licenca');
+    
     if (urlStatus && urlStatus !== statusFilter) {
       setStatusFilter(urlStatus);
+      setPage(1);
+    }
+    if (urlStatusLicenca) {
+      setStatusLicencaFilter(urlStatusLicenca);
+      setStatusFilter(''); // Clear status filter when filtering by license status
       setPage(1);
     }
   }, [searchParams]);
@@ -85,16 +99,22 @@ export default function MembersPage() {
 
   useEffect(() => {
     fetchMembers();
-  }, [page, statusFilter]);
+  }, [page, statusFilter, statusLicencaFilter]);
 
   const fetchConstants = async () => {
     try {
-      const [postosRes, municipiosRes] = await Promise.all([
+      const [postosRes, municipiosRes, unidadesRes, statusLicencaRes, anosRes] = await Promise.all([
         axios.get(`${API}/constants/postos`),
-        axios.get(`${API}/constants/municipios`)
+        axios.get(`${API}/constants/municipios`),
+        axios.get(`${API}/constants/unidades`),
+        axios.get(`${API}/constants/status-licenca`),
+        axios.get(`${API}/constants/anos-incorporacao`)
       ]);
       setPostos(postosRes.data);
       setMunicipios(municipiosRes.data);
+      setUnidades(unidadesRes.data);
+      setStatusLicencaOptions(statusLicencaRes.data);
+      setAnosIncorporacao(anosRes.data);
     } catch (error) {
       console.error('Error fetching constants:', error);
     }
@@ -107,10 +127,13 @@ export default function MembersPage() {
       params.append('page', page);
       params.append('limit', limit);
       if (statusFilter) params.append('status', statusFilter);
+      if (statusLicencaFilter) params.append('status_licenca', statusLicencaFilter);
       if (searchNome) params.append('nome', searchNome);
       if (searchNim) params.append('nim', searchNim);
       if (postoFilter) params.append('posto', postoFilter);
       if (municipioFilter) params.append('municipio', municipioFilter);
+      if (unidadeFilter) params.append('unidade', unidadeFilter);
+      if (anoIncorporacaoFilter) params.append('ano_incorporacao', anoIncorporacaoFilter);
       
       const response = await axios.get(`${API}/members?${params.toString()}`);
       setMembers(response.data.members);
@@ -262,6 +285,69 @@ export default function MembersPage() {
             </div>
           </div>
           
+          {/* Additional Filters Row */}
+          <div className={`grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 ${showFilters ? '' : 'hidden'}`}>
+            <div>
+              <Select value={unidadeFilter} onValueChange={setUnidadeFilter}>
+                <SelectTrigger className="rounded-sm" data-testid="filter-unidade-select">
+                  <SelectValue placeholder="Filtrar por Unidade" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas as Unidades</SelectItem>
+                  {unidades.map((u) => (
+                    <SelectItem key={u} value={u}>{u}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Select value={anoIncorporacaoFilter} onValueChange={setAnoIncorporacaoFilter}>
+                <SelectTrigger className="rounded-sm" data-testid="filter-ano-incorporacao-select">
+                  <SelectValue placeholder="Filtrar por Ano Incorporação" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os Anos</SelectItem>
+                  {anosIncorporacao.map((a) => (
+                    <SelectItem key={a} value={a}>{a}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Select value={statusLicencaFilter} onValueChange={(v) => { setStatusLicencaFilter(v); setPage(1); }}>
+                <SelectTrigger className="rounded-sm" data-testid="filter-status-licenca-select">
+                  <SelectValue placeholder="Filtrar por Status Licença" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os Status</SelectItem>
+                  {statusLicencaOptions.map((sl) => (
+                    <SelectItem key={sl} value={sl}>{sl}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  setSearchNome('');
+                  setSearchNim('');
+                  setPostoFilter('');
+                  setMunicipioFilter('');
+                  setUnidadeFilter('');
+                  setAnoIncorporacaoFilter('');
+                  setStatusLicencaFilter('');
+                  setStatusFilter('Ativo');
+                  setPage(1);
+                }}
+                className="rounded-sm text-slate-600"
+              >
+                Limpar Filtros
+              </Button>
+            </div>
+          </div>
+          
           <div className="flex justify-end mt-4">
             <Button onClick={handleSearch} className="bg-emerald-900 hover:bg-emerald-800 rounded-sm" data-testid="apply-filters-button">
               <Search className="h-4 w-4 mr-2" /> Buscar
@@ -269,6 +355,19 @@ export default function MembersPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Total Members Info */}
+      <div className="flex justify-between items-center text-sm text-muted-foreground">
+        <span>
+          Total: <strong className="text-foreground">{total}</strong> membro(s) encontrado(s)
+          {statusLicencaFilter && statusLicencaFilter !== 'all' && (
+            <span className="ml-2">| Status Licença: <strong>{statusLicencaFilter}</strong></span>
+          )}
+        </span>
+        <span>
+          Página {page} de {Math.ceil(total / limit) || 1}
+        </span>
+      </div>
 
       {/* Table */}
       <div ref={printRef}>
@@ -379,6 +478,9 @@ export default function MembersPage() {
 
         {/* Print Footer */}
         <div className="hidden print:block mt-6 pt-4 border-t">
+          <p className="text-sm font-medium mb-2">
+            Total de Membros: {total}
+          </p>
           <p className="text-xs text-center text-slate-500">
             FALINTIL-FDTL: Divisão de Comunicação e Sistema de Informação @2026
           </p>

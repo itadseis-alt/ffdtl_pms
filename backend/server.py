@@ -52,7 +52,7 @@ UNIDADES = [
     "Componente Aérea Ligeira (CAL)", "Força Apoio Geral (FAG)", "Unidade Apoio Serviço (UAS)",
     "Centro de Instrução do Comandante Nicolau Lobato (CICNL)", "Unidade de Polícia Militar (PM)",
     "Unidade FALINTIL (UF)", "1º Batalhão da CFT", "2º Batalhão da CFT", "Companhia de Transmissões",
-    "Companhia de Engenharia", "Corpo Fuzileiros"
+    "Companhia de Engenharia"
 ]
 
 MUNICIPIOS = ["Aileu", "Ainaro", "Atauro", "Baucau", "Bobonaro", "Covalima/Suai", "Dili", "Ermera", "Lautem", "Liquiça", "Manatuto", "Manufahi/Same", "Oecusse", "Viqueque"]
@@ -70,6 +70,34 @@ TIPOS_LICENCA = ["Para Ferias", "Por Merito", "Por Falecimento de Familiar", "Po
 CARTAO_CONDUCAO = ["A1", "A2", "B1", "B2", "C1", "C2"]
 
 MEMBER_STATUS = ["Ativo", "Falecido", "Separação do Serviço", "Reserva", "Reforma"]
+
+# Status de Escolaridade
+STATUS_ESCOLARIDADE = ["Doutorado/a", "Mestrado/a", "Licenciatura", "Bacharelato", "D3", "D1", "Secundária", "Pré-Secundária", "Primária"]
+
+# Status de Licença (situação atual do membro)
+STATUS_LICENCA = ["Em Serviço", "Licença Sem Vencimento", "Licença Junta Médica", "Licença de Partos", "Licença de Estudo", "Curso no Exterior", "Curso no Interior"]
+
+# Postos que NÃO têm promoção (postos iniciais)
+POSTOS_SEM_PROMOCAO = ["Soldado", "Grumete", "Soldado Instruendo"]
+
+# Lista completa de postos para promoção
+POSTOS_PROMOCAO = [
+    "General", "Almirante", "Tenente General", "Vice Almirante", "Major General", "Contra Almirante",
+    "Brigadeiro General", "Comodoro", "Coronel", "Capitão-de-mar-e-guerra", "Tenente-Coronel", 
+    "Capitão de Fragata", "Major", "Capitão Tenente", "Capitão", "Primeiro Tenente", "Tenente", 
+    "Segundo Tenente", "Alferes", "Subtenente", "Sargento Mor", "Sargento Chefe", "Sargento Ajudante",
+    "Primeiro Sargento", "Segundo Sargento", "Cabo de Seção", "Cabo", "Cabo Adjunto", 
+    "Primeiro Marinheiro", "Segundo Cabo", "Soldado", "Grumete", "Soldado Instruendo"
+]
+
+# Unidades/Componentes atualizadas
+UNIDADES = [
+    "Quartel General", "Componente Força Terrestre (CFT)", "Componente Força Naval (CFN)",
+    "Componente Aérea Ligeira (CAL)", "Força Apoio Geral (FAG)", "Unidade Apoio Serviço (UAS)",
+    "Centro de Instrução do Comandante Nicolau Lobato (CICNL)", "Unidade de Polícia Militar (PM)",
+    "Unidade FALINTIL (UF)", "1º Batalhão da CFT", "2º Batalhão da CFT", "Companhia de Transmissões",
+    "Companhia de Engenharia"
+]
 
 # ==================== MODELS ====================
 class UserCreate(BaseModel):
@@ -121,6 +149,13 @@ class MemberCreate(BaseModel):
     tipo_sanguineo: str
     foto_perfil: Optional[str] = None
     status: str = "Ativo"
+    
+    # Novos campos
+    ano_incorporacao: Optional[str] = None  # Ano de Incorporação
+    data_promocao: Optional[str] = None  # Data de Promoção (DD/MM/YYYY)
+    posto_promovido: Optional[str] = None  # Posto para qual foi promovido
+    status_escolaridade: Optional[str] = None  # Status de Escolaridade
+    status_licenca: str = "Em Serviço"  # Status de Licença (situação atual)
     
     # Step 2: Documentos
     payroll_no: Optional[str] = None
@@ -234,7 +269,7 @@ def calculate_age(birth_date_str: str) -> int:
         today = datetime.now()
         age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
         return age
-    except:
+    except Exception:
         return 0
 
 # ==================== AUTH ROUTES ====================
@@ -248,6 +283,15 @@ async def login(credentials: UserLogin):
     
     token = create_access_token({"sub": user["user_id"], "role": user["role"]})
     user_data = {k: v for k, v in user.items() if k != "senha_hash"}
+    
+    # Log de atividade - Login
+    await log_activity(
+        user_id=user["user_id"],
+        user_email=user["email"],
+        user_role=user["role"],
+        action="LOGIN",
+        details=f"Usuário {user['nome']} {user.get('sobrenome', '')} fez login no sistema"
+    )
     return TokenResponse(access_token=token, user=user_data)
 
 @api_router.get("/auth/me")
@@ -413,6 +457,10 @@ async def create_member(member_data: MemberCreate, current_user = Depends(requir
     member_doc["created_by"] = current_user["user_id"]
     member_doc["updated_at"] = datetime.now(timezone.utc).isoformat()
     
+    # Set default status_licenca if not provided
+    if not member_doc.get("status_licenca"):
+        member_doc["status_licenca"] = "Em Serviço"
+    
     # Calculate age and check for retirement
     age = calculate_age(member_data.data_nascimento)
     member_doc["idade"] = age
@@ -421,16 +469,28 @@ async def create_member(member_data: MemberCreate, current_user = Depends(requir
     
     await db.members.insert_one(member_doc)
     del member_doc["_id"]
+    
+    # Log de atividade
+    await log_activity(
+        user_id=current_user["user_id"],
+        user_email=current_user["email"],
+        user_role=current_user["role"],
+        action="CRIAR_MEMBRO",
+        details=f"Criou membro: {member_data.nome} (NIM: {member_data.nim})"
+    )
+    
     return member_doc
 
 @api_router.get("/members")
 async def list_members(
     status: Optional[str] = None,
+    status_licenca: Optional[str] = None,
     unidade: Optional[str] = None,
     posto: Optional[str] = None,
     municipio: Optional[str] = None,
     sexo: Optional[str] = None,
     tipo_sanguineo: Optional[str] = None,
+    ano_incorporacao: Optional[str] = None,
     nome: Optional[str] = None,
     nim: Optional[str] = None,
     page: int = 1,
@@ -440,6 +500,8 @@ async def list_members(
     query = {}
     if status:
         query["status"] = status
+    if status_licenca:
+        query["status_licenca"] = status_licenca
     if unidade:
         query["unidade"] = unidade
     if posto:
@@ -450,6 +512,8 @@ async def list_members(
         query["sexo"] = sexo
     if tipo_sanguineo:
         query["tipo_sanguineo"] = tipo_sanguineo
+    if ano_incorporacao:
+        query["ano_incorporacao"] = ano_incorporacao
     if nome:
         query["nome"] = {"$regex": nome, "$options": "i"}
     if nim:
@@ -457,7 +521,9 @@ async def list_members(
     
     skip = (page - 1) * limit
     total = await db.members.count_documents(query)
-    members = await db.members.find(query, {"_id": 0}).skip(skip).limit(limit).to_list(limit)
+    
+    # Ordenar por nome alfabeticamente (A-Z)
+    members = await db.members.find(query, {"_id": 0}).sort("nome", 1).skip(skip).limit(limit).to_list(limit)
     
     # Update ages
     for member in members:
@@ -475,6 +541,11 @@ async def get_member(member_id: str, current_user = Depends(get_current_user)):
 
 @api_router.put("/members/{member_id}")
 async def update_member(member_id: str, data: dict, current_user = Depends(require_role(["admin", "rh"]))):
+    # Get current member data for logging
+    current_member = await db.members.find_one({"member_id": member_id}, {"_id": 0})
+    if not current_member:
+        raise HTTPException(status_code=404, detail="Membro não encontrado")
+    
     data["updated_at"] = datetime.now(timezone.utc).isoformat()
     data["updated_by"] = current_user["user_id"]
     
@@ -488,13 +559,37 @@ async def update_member(member_id: str, data: dict, current_user = Depends(requi
     result = await db.members.update_one({"member_id": member_id}, {"$set": data})
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Membro não encontrado")
+    
+    # Log de atividade
+    await log_activity(
+        user_id=current_user["user_id"],
+        user_email=current_user["email"],
+        user_role=current_user["role"],
+        action="ATUALIZAR_MEMBRO",
+        details=f"Atualizou membro: {current_member.get('nome', 'N/A')} (NIM: {current_member.get('nim', 'N/A')})"
+    )
+    
     return {"message": "Membro atualizado com sucesso"}
 
 @api_router.delete("/members/{member_id}")
 async def delete_member(member_id: str, current_user = Depends(require_role(["admin"]))):
+    # Get member for logging
+    member = await db.members.find_one({"member_id": member_id}, {"_id": 0})
+    
     result = await db.members.delete_one({"member_id": member_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Membro não encontrado")
+    
+    # Log de atividade
+    if member:
+        await log_activity(
+            user_id=current_user["user_id"],
+            user_email=current_user["email"],
+            user_role=current_user["role"],
+            action="EXCLUIR_MEMBRO",
+            details=f"Excluiu membro: {member.get('nome', 'N/A')} (NIM: {member.get('nim', 'N/A')})"
+        )
+    
     return {"message": "Membro excluído com sucesso"}
 
 @api_router.put("/members/{member_id}/status")
@@ -523,6 +618,15 @@ async def get_dashboard_stats(current_user = Depends(get_current_user)):
     separacao = await db.members.count_documents({"status": "Separação do Serviço"})
     reserva = await db.members.count_documents({"status": "Reserva"})
     reforma = await db.members.count_documents({"status": "Reforma"})
+    
+    # Estatísticas por Status de Licença
+    em_servico = await db.members.count_documents({"status_licenca": "Em Serviço"})
+    licenca_sem_vencimento = await db.members.count_documents({"status_licenca": "Licença Sem Vencimento"})
+    licenca_junta_medica = await db.members.count_documents({"status_licenca": "Licença Junta Médica"})
+    licenca_partos = await db.members.count_documents({"status_licenca": "Licença de Partos"})
+    licenca_estudo = await db.members.count_documents({"status_licenca": "Licença de Estudo"})
+    curso_exterior = await db.members.count_documents({"status_licenca": "Curso no Exterior"})
+    curso_interior = await db.members.count_documents({"status_licenca": "Curso no Interior"})
     
     masculino = await db.members.count_documents({"sexo": "M"})
     feminino = await db.members.count_documents({"sexo": "F"})
@@ -555,6 +659,14 @@ async def get_dashboard_stats(current_user = Depends(get_current_user)):
     ]
     por_municipio = await db.members.aggregate(municipio_pipeline).to_list(20)
     
+    # Por ano de incorporação
+    incorporacao_pipeline = [
+        {"$match": {"ano_incorporacao": {"$nin": [None, ""]}}},
+        {"$group": {"_id": "$ano_incorporacao", "count": {"$sum": 1}}},
+        {"$sort": {"_id": -1}}
+    ]
+    por_incorporacao = await db.members.aggregate(incorporacao_pipeline).to_list(50)
+    
     return {
         "total": total,
         "por_status": {
@@ -564,11 +676,21 @@ async def get_dashboard_stats(current_user = Depends(get_current_user)):
             "reserva": reserva,
             "reforma": reforma
         },
+        "por_status_licenca": {
+            "em_servico": em_servico,
+            "licenca_sem_vencimento": licenca_sem_vencimento,
+            "licenca_junta_medica": licenca_junta_medica,
+            "licenca_partos": licenca_partos,
+            "licenca_estudo": licenca_estudo,
+            "curso_exterior": curso_exterior,
+            "curso_interior": curso_interior
+        },
         "por_sexo": {"masculino": masculino, "feminino": feminino},
         "por_unidade": [{"unidade": u["_id"], "count": u["count"]} for u in por_unidade if u["_id"]],
         "por_posto": [{"posto": p["_id"], "count": p["count"]} for p in por_posto if p["_id"]],
         "por_tipo_sanguineo": [{"tipo": s["_id"], "count": s["count"]} for s in por_sangue if s["_id"]],
-        "por_municipio": [{"municipio": m["_id"], "count": m["count"]} for m in por_municipio if m["_id"]]
+        "por_municipio": [{"municipio": m["_id"], "count": m["count"]} for m in por_municipio if m["_id"]],
+        "por_incorporacao": [{"ano": i["_id"], "count": i["count"]} for i in por_incorporacao if i["_id"]]
     }
 
 # ==================== NOTIFICATIONS ====================
@@ -728,6 +850,104 @@ async def get_cartao_conducao():
 @api_router.get("/constants/member-status")
 async def get_member_status():
     return MEMBER_STATUS
+
+@api_router.get("/constants/status-escolaridade")
+async def get_status_escolaridade():
+    return STATUS_ESCOLARIDADE
+
+@api_router.get("/constants/status-licenca")
+async def get_status_licenca():
+    return STATUS_LICENCA
+
+@api_router.get("/constants/postos-promocao")
+async def get_postos_promocao():
+    return POSTOS_PROMOCAO
+
+@api_router.get("/constants/postos-sem-promocao")
+async def get_postos_sem_promocao():
+    return POSTOS_SEM_PROMOCAO
+
+@api_router.get("/constants/anos-incorporacao")
+async def get_anos_incorporacao(current_user = Depends(get_current_user)):
+    """Retorna apenas os anos de incorporação que existem no sistema"""
+    pipeline = [
+        {"$match": {"ano_incorporacao": {"$nin": [None, ""]}}},
+        {"$group": {"_id": "$ano_incorporacao"}},
+        {"$sort": {"_id": -1}}
+    ]
+    anos = await db.members.aggregate(pipeline).to_list(100)
+    return [a["_id"] for a in anos if a["_id"]]
+
+# ==================== ACTIVITY LOGS ====================
+async def log_activity(user_id: str, user_email: str, user_role: str, action: str, details: str = None, ip_address: str = None):
+    """Registrar atividade no sistema"""
+    log_doc = {
+        "log_id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "user_email": user_email,
+        "user_role": user_role,
+        "action": action,
+        "details": details,
+        "ip_address": ip_address,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "hora": datetime.now(timezone.utc).strftime("%H:%M:%S"),
+        "dia": datetime.now(timezone.utc).strftime("%d"),
+        "mes": datetime.now(timezone.utc).strftime("%m"),
+        "ano": datetime.now(timezone.utc).strftime("%Y"),
+        "data_formatada": datetime.now(timezone.utc).strftime("%d/%m/%Y %H:%M:%S")
+    }
+    await db.activity_logs.insert_one(log_doc)
+    return log_doc
+
+@api_router.get("/activity-logs")
+async def get_activity_logs(
+    page: int = 1,
+    limit: int = 50,
+    user_email: Optional[str] = None,
+    action: Optional[str] = None,
+    data_inicio: Optional[str] = None,
+    data_fim: Optional[str] = None,
+    current_user = Depends(require_role(["admin"]))
+):
+    """Listar logs de atividade - apenas admin"""
+    query = {}
+    
+    if user_email:
+        query["user_email"] = {"$regex": user_email, "$options": "i"}
+    if action:
+        query["action"] = {"$regex": action, "$options": "i"}
+    if data_inicio:
+        query["timestamp"] = {"$gte": data_inicio}
+    if data_fim:
+        if "timestamp" in query:
+            query["timestamp"]["$lte"] = data_fim
+        else:
+            query["timestamp"] = {"$lte": data_fim}
+    
+    skip = (page - 1) * limit
+    total = await db.activity_logs.count_documents(query)
+    logs = await db.activity_logs.find(query, {"_id": 0}).sort("timestamp", -1).skip(skip).limit(limit).to_list(limit)
+    
+    return {"total": total, "page": page, "limit": limit, "logs": logs}
+
+@api_router.get("/activity-logs/export")
+async def export_activity_logs(
+    data_inicio: Optional[str] = None,
+    data_fim: Optional[str] = None,
+    current_user = Depends(require_role(["admin"]))
+):
+    """Exportar todos os logs - apenas admin"""
+    query = {}
+    if data_inicio:
+        query["timestamp"] = {"$gte": data_inicio}
+    if data_fim:
+        if "timestamp" in query:
+            query["timestamp"]["$lte"] = data_fim
+        else:
+            query["timestamp"] = {"$lte": data_fim}
+    
+    logs = await db.activity_logs.find(query, {"_id": 0}).sort("timestamp", -1).to_list(10000)
+    return logs
 
 # ==================== INIT ADMIN ====================
 @api_router.post("/init-admin")
