@@ -2,7 +2,7 @@
 ## PRD - Product Requirements Document
 
 ### Data de Criação: 2026-01-26
-### Última Atualização: 2026-03-26
+### Última Atualização: 2026-03-27
 
 ---
 
@@ -25,6 +25,7 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 - Acesso total ao sistema
 - Pode editar/excluir membros
 - Gerencia backups
+- Acessa logs de atividade
 
 ### RH (Recursos Humanos)
 - Cadastra e edita membros
@@ -48,16 +49,23 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 ### 3.2 Dashboard
 - [x] Total de membros
 - [x] Estatísticas por status (Ativo, Falecido, Separação, Reserva, Reforma)
+- [x] Estatísticas por Status de Licença (Em Serviço, Lic. Sem Vencimento, etc.)
 - [x] Estatísticas por sexo
 - [x] Gráficos por unidade
 - [x] Gráficos por posto
 - [x] Gráficos por tipo sanguíneo
 - [x] Filtro por unidade
-- [x] Cards clicáveis para navegação rápida por status
+- [x] Cards clicáveis para navegação rápida
 
 ### 3.3 Gestão de Membros
 - [x] Cadastro com 16 steps
-- [x] Listagem com filtros
+- [x] Campo Ano de Incorporação
+- [x] Campos de Promoção (Data e Posto - condicionais)
+- [x] Status de Escolaridade
+- [x] Status de Licença (situação atual)
+- [x] Listagem com filtros (Status, Unidade, Posto, Município, Ano Incorporação, Status Licença)
+- [x] Ordenação alfabética (A-Z)
+- [x] Total de membros exibido com filtros
 - [x] Visualização detalhada
 - [x] Edição de membros
 - [x] Exclusão (Admin)
@@ -82,9 +90,29 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 - [x] Impressão por step individual
 - [x] Impressão de ficha completa
 
+### 3.7 Logs de Atividade
+- [x] Registro automático de login, criação, edição e exclusão
+- [x] Data/Hora, Usuário, Função, Ação, Detalhes
+- [x] Filtros por email, ação e período
+- [x] Exportação para CSV
+- [x] Acesso exclusivo para Admin
+
 ---
 
 ## 4. Changelog
+
+### v1.2 (2026-03-27)
+- **Novo:** Campo Ano de Incorporação no cadastro
+- **Novo:** Campos de Promoção (Data e Posto) - condicionais por posto
+- **Novo:** Status de Escolaridade (Doutorado/a até Primária)
+- **Novo:** Status de Licença (Em Serviço, Lic. Sem Vencimento, etc.)
+- **Novo:** Cards de Status de Licença no Dashboard (7 cards clicáveis)
+- **Novo:** Filtros por Unidade e Ano de Incorporação
+- **Novo:** Filtro por Status de Licença
+- **Novo:** Ordenação alfabética (A-Z) na lista de membros
+- **Novo:** Total de membros exibido com filtros aplicados
+- **Novo:** Sistema de Logs de Atividade (página completa, filtros, exportação CSV)
+- **Novo:** Unidades atualizadas (Quartel General, CFT, CFN, CAL, FAG, etc.)
 
 ### v1.1 (2026-03-26)
 - **Correção:** Foto de perfil exibindo corretamente (helper getFileUrl)
@@ -108,23 +136,21 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 
 ### P0 (Crítico) - Próxima Iteração
 - [ ] Integração de email (Resend) para notificações de reforma
-- [ ] Cálculo automático de dias em licenças
+- [ ] Validação automática de idade para reforma (60 anos)
 
 ### P1 (Alta Prioridade)
 - [ ] Backup automático agendado
-- [ ] Histórico de alterações por membro
+- [ ] Histórico de alterações por membro (já temos logs gerais)
 - [ ] Relatórios PDF por step
-- [ ] Validação de idade para reforma (60 anos)
+- [ ] Cálculo automático de dias em licenças
 
 ### P2 (Média Prioridade)
-- [ ] Dashboard com mais filtros
 - [ ] Gráficos interativos
 - [ ] Busca avançada
 - [ ] Importação em massa
 
 ### P3 (Baixa Prioridade)
 - [ ] Multi-idioma (Tétum)
-- [ ] Logs de auditoria
 
 ---
 
@@ -146,3 +172,19 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 
 - **Frontend:** https://falintil-pms.preview.emergentagent.com
 - **Backend API:** https://falintil-pms.preview.emergentagent.com/api
+
+---
+
+## 9. Constantes do Sistema
+
+### Status de Escolaridade
+Doutorado/a, Mestrado/a, Licenciatura, Bacharelato, D3, D1, Secundária, Pré-Secundária, Primária
+
+### Status de Licença
+Em Serviço, Licença Sem Vencimento, Licença Junta Médica, Licença de Partos, Licença de Estudo, Curso no Exterior, Curso no Interior
+
+### Unidades/Componentes
+Quartel General, CFT, CFN, CAL, FAG, UAS, CICNL, PM, UF, 1º Batalhão CFT, 2º Batalhão CFT, Cia. Transmissões, Cia. Engenharia
+
+### Postos sem Promoção
+Soldado, Grumete, Soldado Instruendo
