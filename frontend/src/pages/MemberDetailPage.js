@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import { useReactToPrint } from 'react-to-print';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-const LOGO = "https://static.prod-images.emergentagent.com/jobs/c19a0984-e82e-494a-88ed-ca23a6e50af4/images/79d39cdf6f7a79fab98f970d607b22ce980c214e0ef3771881e5abae75ac250c.png";
+const LOGO = "https://customer-assets.emergentagent.com/job_falintil-pms/artifacts/e8wwafd0_F-FDTL_Logo.png";
 
 // Helper to ensure file URLs use the /download endpoint
 const getFileUrl = (url) => {

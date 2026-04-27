@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 import { useReactToPrint } from 'react-to-print';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-const LOGO = "https://static.prod-images.emergentagent.com/jobs/c19a0984-e82e-494a-88ed-ca23a6e50af4/images/79d39cdf6f7a79fab98f970d607b22ce980c214e0ef3771881e5abae75ac250c.png";
+const LOGO = "https://customer-assets.emergentagent.com/job_falintil-pms/artifacts/e8wwafd0_F-FDTL_Logo.png";
 
 // Helper to ensure file URLs use the /download endpoint
 const getFileUrl = (url) => {
@@ -49,9 +49,10 @@ export default function MembersPage() {
   const [page, setPage] = useState(1);
   const [limit] = useState(20);
   
-  // Get initial status from URL query params
+  // Get initial filters from URL query params
   const initialStatus = searchParams.get('status') || 'Ativo';
   const initialStatusLicenca = searchParams.get('status_licenca') || '';
+  const initialUnidade = searchParams.get('unidade') || '';
   
   // Filters
   const [statusFilter, setStatusFilter] = useState(initialStatus);
@@ -60,9 +61,9 @@ export default function MembersPage() {
   const [searchNim, setSearchNim] = useState('');
   const [postoFilter, setPostoFilter] = useState('');
   const [municipioFilter, setMunicipioFilter] = useState('');
-  const [unidadeFilter, setUnidadeFilter] = useState('');
+  const [unidadeFilter, setUnidadeFilter] = useState(initialUnidade);
   const [anoIncorporacaoFilter, setAnoIncorporacaoFilter] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(initialUnidade ? true : false);
   
   // Constants
   const [postos, setPostos] = useState({});
@@ -81,6 +82,7 @@ export default function MembersPage() {
   useEffect(() => {
     const urlStatus = searchParams.get('status');
     const urlStatusLicenca = searchParams.get('status_licenca');
+    const urlUnidade = searchParams.get('unidade');
     
     if (urlStatus && urlStatus !== statusFilter) {
       setStatusFilter(urlStatus);
@@ -89,6 +91,12 @@ export default function MembersPage() {
     if (urlStatusLicenca) {
       setStatusLicencaFilter(urlStatusLicenca);
       setStatusFilter(''); // Clear status filter when filtering by license status
+      setPage(1);
+    }
+    if (urlUnidade) {
+      setUnidadeFilter(urlUnidade);
+      setStatusFilter(''); // Clear status filter when filtering by unit
+      setShowFilters(true);
       setPage(1);
     }
   }, [searchParams]);

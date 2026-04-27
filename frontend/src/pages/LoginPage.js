@@ -9,7 +9,7 @@ import { Lock, User, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 const LOGIN_BG = "https://static.prod-images.emergentagent.com/jobs/c19a0984-e82e-494a-88ed-ca23a6e50af4/images/1c7ab59a45ac931c0be81a71c7958007437679b24a3e561dd67846ca22b32986.png";
-const LOGO = "https://static.prod-images.emergentagent.com/jobs/c19a0984-e82e-494a-88ed-ca23a6e50af4/images/79d39cdf6f7a79fab98f970d607b22ce980c214e0ef3771881e5abae75ac250c.png";
+const LOGO = "https://customer-assets.emergentagent.com/job_falintil-pms/artifacts/e8wwafd0_F-FDTL_Logo.png";
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');

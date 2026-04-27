@@ -2,7 +2,7 @@
 ## PRD - Product Requirements Document
 
 ### Data de Criação: 2026-01-26
-### Última Atualização: 2026-03-27
+### Última Atualização: 2026-04-27
 
 ---
 
@@ -100,6 +100,13 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 ---
 
 ## 4. Changelog
+
+### v1.3 (2026-04-27)
+- **Novo:** Nova logo F-FDTL atualizada em todas as páginas
+- **Novo:** Dashboard com Total por Componente (CFT, CFN, CAL, Outros)
+- **Novo:** Cards de componente clicáveis navegando para lista filtrada por unidade
+- **Novo:** Alerta de Reforma no Dashboard (membros com 59 anos - 1 ano antes da reforma)
+- **Novo:** Filtro por Unidade via URL (?unidade=...)
 
 ### v1.2 (2026-03-27)
 - **Novo:** Campo Ano de Incorporação no cadastro

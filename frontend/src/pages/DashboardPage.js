@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Users, UserCheck, UserX, Heart, Shield, Award, AlertTriangle, Bell } from 'lucide-react';
+import { Users, UserCheck, UserX, Heart, Shield, Award, AlertTriangle, Bell, Anchor, Plane, Building2, MoreHorizontal } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { toast } from 'sonner';
 
@@ -23,6 +23,7 @@ export default function DashboardPage() {
   const [filterUnidade, setFilterUnidade] = useState('all');
   const [unidades, setUnidades] = useState([]);
   const [retirementAlerts, setRetirementAlerts] = useState([]);
+  const [showReformaAlert, setShowReformaAlert] = useState(true);
 
   useEffect(() => {
     fetchStats();
@@ -321,6 +322,139 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
+
+      {/* Total por Componente */}
+      <div className="mt-4">
+        <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">Total por Componente</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card 
+            className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-amber-500 transition-colors" 
+            data-testid="stat-cft"
+            onClick={() => navigate('/members?unidade=Componente Força Terrestre (CFT)')}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide">CFT</p>
+                  <p className="text-sm text-muted-foreground">Força Terrestre</p>
+                  <p className="text-2xl font-bold text-amber-600 dark:text-amber-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    {stats?.por_componente?.cft || 0}
+                  </p>
+                </div>
+                <Shield className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-blue-500 transition-colors" 
+            data-testid="stat-cfn"
+            onClick={() => navigate('/members?unidade=Componente Força Naval (CFN)')}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide">CFN</p>
+                  <p className="text-sm text-muted-foreground">Força Naval</p>
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    {stats?.por_componente?.cfn || 0}
+                  </p>
+                </div>
+                <Anchor className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-sky-500 transition-colors" 
+            data-testid="stat-cal"
+            onClick={() => navigate('/members?unidade=Componente Aérea Ligeira (CAL)')}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide">CAL</p>
+                  <p className="text-sm text-muted-foreground">Comp. Aérea</p>
+                  <p className="text-2xl font-bold text-sky-600 dark:text-sky-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    {stats?.por_componente?.cal || 0}
+                  </p>
+                </div>
+                <Plane className="h-8 w-8 text-sky-600 dark:text-sky-400" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border border-border rounded-sm shadow-none card-hover cursor-pointer hover:border-slate-500 transition-colors" 
+            data-testid="stat-outros"
+            onClick={() => navigate('/members')}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide">Outros</p>
+                  <p className="text-sm text-muted-foreground">QG, FAG, UAS...</p>
+                  <p className="text-2xl font-bold text-slate-600 dark:text-slate-400" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    {stats?.por_componente?.outros || 0}
+                  </p>
+                </div>
+                <Building2 className="h-8 w-8 text-slate-600 dark:text-slate-400" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Alerta de Reforma - 1 ano antes (59 anos) */}
+      {showReformaAlert && stats?.alertas_reforma?.length > 0 && (
+        <Card className="border-2 border-red-300 dark:border-red-700 rounded-sm shadow-none bg-red-50 dark:bg-red-950" data-testid="alerta-reforma-card">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg text-red-700 dark:text-red-300 flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <AlertTriangle className="h-5 w-5" />
+                Alerta de Reforma - 1 Ano Antes ({stats.total_alertas_reforma || 0} membro(s))
+              </CardTitle>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowReformaAlert(false)}
+                className="text-red-600 hover:bg-red-100 dark:hover:bg-red-900"
+              >
+                Fechar
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-red-600 dark:text-red-400 mb-3">
+              Membros com 59 anos que entrarão em reforma no próximo ano:
+            </p>
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {stats.alertas_reforma.map((membro) => (
+                <div 
+                  key={membro.member_id} 
+                  className="flex items-center justify-between p-3 bg-white dark:bg-slate-900 rounded-sm border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900 transition-colors"
+                  onClick={() => navigate(`/members/${membro.member_id}`)}
+                >
+                  <div>
+                    <p className="font-medium text-foreground">{membro.nome}</p>
+                    <p className="text-xs text-muted-foreground">
+                      NIM: {membro.nim} | Posto: {membro.posto} | Unidade: {membro.unidade}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <Badge variant="destructive" className="rounded-sm">
+                      {membro.idade} anos
+                    </Badge>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Nasc: {membro.data_nascimento}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Retirement Alerts */}
       {retirementAlerts.length > 0 && (

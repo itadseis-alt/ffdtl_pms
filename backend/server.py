@@ -631,6 +631,19 @@ async def get_dashboard_stats(current_user = Depends(get_current_user)):
     masculino = await db.members.count_documents({"sexo": "M"})
     feminino = await db.members.count_documents({"sexo": "F"})
     
+    # Por Componente/Unidade Principal
+    cft_unidades = ["Componente Força Terrestre (CFT)", "1º Batalhão da CFT", "2º Batalhão da CFT"]
+    cfn_unidades = ["Componente Força Naval (CFN)"]
+    cal_unidades = ["Componente Aérea Ligeira (CAL)"]
+    outras_unidades = ["Quartel General", "Força Apoio Geral (FAG)", "Unidade Apoio Serviço (UAS)", 
+                       "Centro de Instrução do Comandante Nicolau Lobato (CICNL)", "Unidade de Polícia Militar (PM)",
+                       "Unidade FALINTIL (UF)", "Companhia de Transmissões", "Companhia de Engenharia"]
+    
+    total_cft = await db.members.count_documents({"unidade": {"$in": cft_unidades}})
+    total_cfn = await db.members.count_documents({"unidade": {"$in": cfn_unidades}})
+    total_cal = await db.members.count_documents({"unidade": {"$in": cal_unidades}})
+    total_outros = await db.members.count_documents({"unidade": {"$in": outras_unidades}})
+    
     # Por unidade
     unidades_pipeline = [
         {"$group": {"_id": "$unidade", "count": {"$sum": 1}}},
@@ -667,6 +680,27 @@ async def get_dashboard_stats(current_user = Depends(get_current_user)):
     ]
     por_incorporacao = await db.members.aggregate(incorporacao_pipeline).to_list(50)
     
+    # Alerta de reforma - membros com 59 anos (1 ano antes da reforma aos 60)
+    # Buscar membros ativos com idade entre 59 e 60 anos
+    alertas_reforma = await db.members.find(
+        {"status": "Ativo"},
+        {"_id": 0, "member_id": 1, "nome": 1, "nim": 1, "data_nascimento": 1, "posto": 1, "unidade": 1}
+    ).to_list(1000)
+    
+    membros_proximos_reforma = []
+    for m in alertas_reforma:
+        idade = calculate_age(m.get("data_nascimento", ""))
+        if 59 <= idade < 60:
+            membros_proximos_reforma.append({
+                "member_id": m["member_id"],
+                "nome": m["nome"],
+                "nim": m["nim"],
+                "idade": idade,
+                "posto": m.get("posto", ""),
+                "unidade": m.get("unidade", ""),
+                "data_nascimento": m.get("data_nascimento", "")
+            })
+    
     return {
         "total": total,
         "por_status": {
@@ -685,12 +719,20 @@ async def get_dashboard_stats(current_user = Depends(get_current_user)):
             "curso_exterior": curso_exterior,
             "curso_interior": curso_interior
         },
+        "por_componente": {
+            "cft": total_cft,
+            "cfn": total_cfn,
+            "cal": total_cal,
+            "outros": total_outros
+        },
         "por_sexo": {"masculino": masculino, "feminino": feminino},
         "por_unidade": [{"unidade": u["_id"], "count": u["count"]} for u in por_unidade if u["_id"]],
         "por_posto": [{"posto": p["_id"], "count": p["count"]} for p in por_posto if p["_id"]],
         "por_tipo_sanguineo": [{"tipo": s["_id"], "count": s["count"]} for s in por_sangue if s["_id"]],
         "por_municipio": [{"municipio": m["_id"], "count": m["count"]} for m in por_municipio if m["_id"]],
-        "por_incorporacao": [{"ano": i["_id"], "count": i["count"]} for i in por_incorporacao if i["_id"]]
+        "por_incorporacao": [{"ano": i["_id"], "count": i["count"]} for i in por_incorporacao if i["_id"]],
+        "alertas_reforma": membros_proximos_reforma,
+        "total_alertas_reforma": len(membros_proximos_reforma)
     }
 
 # ==================== NOTIFICATIONS ====================
