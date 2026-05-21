@@ -683,10 +683,10 @@ export default function MemberFormPage() {
               <FileUploadField label="Anexo Utente" field="utente_anexo" value={formData.utente_anexo} nameField="utente_anexo_nome" fileName={formData.utente_anexo_nome} />
               
               <div className="space-y-2">
-                <Label className="text-foreground">Cartão Eleitoral</Label>
+                <Label className="text-foreground">Cartão de Eleitor</Label>
                 <Input value={formData.cartao_eleitoral} onChange={(e) => handleInputChange('cartao_eleitoral', e.target.value)} className="rounded-sm" />
               </div>
-              <FileUploadField label="Anexo Cartão Eleitoral" field="cartao_eleitoral_anexo" value={formData.cartao_eleitoral_anexo} nameField="cartao_eleitoral_anexo_nome" fileName={formData.cartao_eleitoral_anexo_nome} />
+              <FileUploadField label="Anexo Cartão de Eleitor" field="cartao_eleitoral_anexo" value={formData.cartao_eleitoral_anexo} nameField="cartao_eleitoral_anexo_nome" fileName={formData.cartao_eleitoral_anexo_nome} />
               
               <div className="space-y-2">
                 <Label className="text-foreground">Bilhete de Identidade</Label>
@@ -745,8 +745,12 @@ export default function MemberFormPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label className="text-foreground">Ano de Estudo</Label>
-                        <Input type="number" value={hab.ano_estudo || ''} onChange={(e) => handleArrayChange('habilitacoes', index, 'ano_estudo', e.target.value)} className="rounded-sm" />
+                        <Label className="text-foreground">Ano Início do Estudo</Label>
+                        <Input type="number" value={hab.ano_inicio_estudo || ''} onChange={(e) => handleArrayChange('habilitacoes', index, 'ano_inicio_estudo', e.target.value)} className="rounded-sm" placeholder="Ex: 2015" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-foreground">Ano de Finalização</Label>
+                        <Input type="number" value={hab.ano_estudo || ''} onChange={(e) => handleArrayChange('habilitacoes', index, 'ano_estudo', e.target.value)} className="rounded-sm" placeholder="Ex: 2019" />
                       </div>
                       <div className="space-y-2">
                         <Label className="text-foreground">Grau de Estudo</Label>
@@ -774,7 +778,7 @@ export default function MemberFormPage() {
                   </CardContent>
                 </Card>
               ))}
-              <Button variant="outline" onClick={() => handleArrayAdd('habilitacoes', { ano_estudo: '', grau_estudo: '', area_estudo: '', local_curso: '', anexo: '', anexo_nome: '' })} className="rounded-sm">
+              <Button variant="outline" onClick={() => handleArrayAdd('habilitacoes', { ano_inicio_estudo: '', ano_estudo: '', grau_estudo: '', area_estudo: '', local_curso: '', anexo: '', anexo_nome: '' })} className="rounded-sm">
                 <Plus className="h-4 w-4 mr-2" /> Adicionar Habilitação
               </Button>
             </div>
@@ -834,7 +838,11 @@ export default function MemberFormPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label className="text-foreground">Ano/Período</Label>
+                        <Label className="text-foreground">Ano/Período de Início</Label>
+                        <Input type="date" value={form.ano_periodo_inicio || ''} onChange={(e) => handleArrayChange('formacao_militar', index, 'ano_periodo_inicio', e.target.value)} className="rounded-sm" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-foreground">Ano/Período de Finalização</Label>
                         <Input type="date" value={form.ano_periodo || ''} onChange={(e) => handleArrayChange('formacao_militar', index, 'ano_periodo', e.target.value)} className="rounded-sm" />
                       </div>
                       <div className="space-y-2">
@@ -866,7 +874,7 @@ export default function MemberFormPage() {
                   </CardContent>
                 </Card>
               ))}
-              <Button variant="outline" onClick={() => handleArrayAdd('formacao_militar', { ano_periodo: '', tipo_formacao: '', instituto: '', valor: '', resultado: '', anexo: '', anexo_nome: '' })} className="rounded-sm">
+              <Button variant="outline" onClick={() => handleArrayAdd('formacao_militar', { ano_periodo_inicio: '', ano_periodo: '', tipo_formacao: '', instituto: '', valor: '', resultado: '', anexo: '', anexo_nome: '' })} className="rounded-sm">
                 <Plus className="h-4 w-4 mr-2" /> Adicionar Formação
               </Button>
             </div>
@@ -936,8 +944,12 @@ export default function MemberFormPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label className="text-foreground">Desde (Ano)</Label>
-                        <Input type="number" value={exp.desde || ''} onChange={(e) => handleArrayChange('experiencia_servico', index, 'desde', e.target.value)} className="rounded-sm" />
+                        <Label className="text-foreground">Ano de Início</Label>
+                        <Input type="number" value={exp.ano_inicio || ''} onChange={(e) => handleArrayChange('experiencia_servico', index, 'ano_inicio', e.target.value)} className="rounded-sm" placeholder="Ex: 2015" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-foreground">Ano de Término</Label>
+                        <Input type="number" value={exp.desde || ''} onChange={(e) => handleArrayChange('experiencia_servico', index, 'desde', e.target.value)} className="rounded-sm" placeholder="Ex: 2020" />
                       </div>
                       <div className="space-y-2">
                         <Label className="text-foreground">Unidade/Componente</Label>
@@ -952,7 +964,7 @@ export default function MemberFormPage() {
                           </SelectContent>
                         </Select>
                       </div>
-                      <div className="space-y-2 md:col-span-2">
+                      <div className="space-y-2">
                         <Label className="text-foreground">Função Desempenhada</Label>
                         <Input value={exp.funcao_desempenho || ''} onChange={(e) => handleArrayChange('experiencia_servico', index, 'funcao_desempenho', e.target.value)} className="rounded-sm" />
                       </div>
@@ -961,7 +973,7 @@ export default function MemberFormPage() {
                   </CardContent>
                 </Card>
               ))}
-              <Button variant="outline" onClick={() => handleArrayAdd('experiencia_servico', { desde: '', unidade_componente: '', funcao_desempenho: '', anexo: '', anexo_nome: '' })} className="rounded-sm">
+              <Button variant="outline" onClick={() => handleArrayAdd('experiencia_servico', { ano_inicio: '', desde: '', unidade_componente: '', funcao_desempenho: '', anexo: '', anexo_nome: '' })} className="rounded-sm">
                 <Plus className="h-4 w-4 mr-2" /> Adicionar Experiência
               </Button>
             </div>

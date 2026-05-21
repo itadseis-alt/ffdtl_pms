@@ -125,7 +125,7 @@ export default function DashboardPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">Total Membros</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">Total Efetivos</p>
                 <p className="text-2xl font-bold text-foreground" style={{ fontFamily: 'Outfit, sans-serif' }}>
                   {stats?.total || 0}
                 </p>
@@ -443,6 +443,49 @@ export default function DashboardPage() {
                   </div>
                   <div className="text-right">
                     <Badge variant="destructive" className="rounded-sm">
+                      {membro.idade} anos
+                    </Badge>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Nasc: {membro.data_nascimento}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Alerta de 55 Anos - 1 ano antes (54 anos) */}
+      {stats?.alertas_55_anos?.length > 0 && (
+        <Card className="border-2 border-orange-300 dark:border-orange-700 rounded-sm shadow-none bg-orange-50 dark:bg-orange-950" data-testid="alerta-55-anos-card">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg text-orange-700 dark:text-orange-300 flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <Bell className="h-5 w-5" />
+                Alerta 55 Anos - 1 Ano Antes ({stats.total_alertas_55 || 0} membro(s))
+              </CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-orange-600 dark:text-orange-400 mb-3">
+              Membros com 54 anos que completarão 55 anos no próximo ano:
+            </p>
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {stats.alertas_55_anos.map((membro) => (
+                <div 
+                  key={membro.member_id} 
+                  className="flex items-center justify-between p-3 bg-white dark:bg-slate-900 rounded-sm border border-orange-200 dark:border-orange-800 cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900 transition-colors"
+                  onClick={() => navigate(`/members/${membro.member_id}`)}
+                >
+                  <div>
+                    <p className="font-medium text-foreground">{membro.nome}</p>
+                    <p className="text-xs text-muted-foreground">
+                      NIM: {membro.nim} | Posto: {membro.posto} | Unidade: {membro.unidade}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <Badge className="rounded-sm bg-orange-600">
                       {membro.idade} anos
                     </Badge>
                     <p className="text-xs text-muted-foreground mt-1">

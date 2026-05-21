@@ -42,9 +42,9 @@ logger = logging.getLogger(__name__)
 POSTOS = {
     "Oficiais Generais": ["General", "Almirante", "Tenente General", "Vice Almirante", "Major General", "Contra Almirante", "Brigadeiro General", "Comodoro"],
     "Oficiais Superiores": ["Coronel", "Capitão-de-mar-e-guerra", "Tenente-Coronel", "Capitão de Fragata", "Major", "Capitão Tenente"],
-    "Oficiais Capitães e Subalternos": ["Capitão", "Primeiro Tenente", "Tenente", "Segundo Tenente", "Alferes"],
+    "Oficiais Capitães e Subalternos": ["Capitão", "Primeiro Tenente", "Tenente", "Segundo Tenente", "Subtenente", "Alferes"],
     "Sargentos": ["Sargento Mor", "Sargento Chefe", "Sargento Ajudante", "Primeiro Sargento", "Segundo Sargento"],
-    "Praças": ["Cabo de Seção", "Cabo", "Cabo Adjunto", "Primeiro Marinheiro", "Segundo Cabo", "Primeiro Grumete", "Soldado", "Segundo Grumete", "Soldado Instruendo"]
+    "Praças": ["Cabo de Seção", "Cabo", "Cabo Adjunto", "Primeiro Marinheiro", "Segundo Marinheiro", "Segundo Cabo", "Primeiro Grumete", "Soldado", "Segundo Grumete", "Soldado Instruendo"]
 }
 
 UNIDADES = [
@@ -85,9 +85,9 @@ POSTOS_PROMOCAO = [
     "General", "Almirante", "Tenente General", "Vice Almirante", "Major General", "Contra Almirante",
     "Brigadeiro General", "Comodoro", "Coronel", "Capitão-de-mar-e-guerra", "Tenente-Coronel", 
     "Capitão de Fragata", "Major", "Capitão Tenente", "Capitão", "Primeiro Tenente", "Tenente", 
-    "Segundo Tenente", "Alferes", "Subtenente", "Sargento Mor", "Sargento Chefe", "Sargento Ajudante",
+    "Segundo Tenente", "Subtenente", "Alferes", "Sargento Mor", "Sargento Chefe", "Sargento Ajudante",
     "Primeiro Sargento", "Segundo Sargento", "Cabo de Seção", "Cabo", "Cabo Adjunto", 
-    "Primeiro Marinheiro", "Segundo Cabo", "Soldado", "Grumete", "Soldado Instruendo"
+    "Primeiro Marinheiro", "Segundo Marinheiro", "Segundo Cabo", "Soldado", "Grumete", "Soldado Instruendo"
 ]
 
 # Unidades/Componentes atualizadas
@@ -688,10 +688,23 @@ async def get_dashboard_stats(current_user = Depends(get_current_user)):
     ).to_list(1000)
     
     membros_proximos_reforma = []
+    membros_proximos_55 = []
     for m in alertas_reforma:
         idade = calculate_age(m.get("data_nascimento", ""))
+        # Alerta reforma (59 anos - 1 ano antes dos 60)
         if 59 <= idade < 60:
             membros_proximos_reforma.append({
+                "member_id": m["member_id"],
+                "nome": m["nome"],
+                "nim": m["nim"],
+                "idade": idade,
+                "posto": m.get("posto", ""),
+                "unidade": m.get("unidade", ""),
+                "data_nascimento": m.get("data_nascimento", "")
+            })
+        # Alerta 55 anos (54 anos - 1 ano antes dos 55)
+        if 54 <= idade < 55:
+            membros_proximos_55.append({
                 "member_id": m["member_id"],
                 "nome": m["nome"],
                 "nim": m["nim"],
@@ -732,7 +745,9 @@ async def get_dashboard_stats(current_user = Depends(get_current_user)):
         "por_municipio": [{"municipio": m["_id"], "count": m["count"]} for m in por_municipio if m["_id"]],
         "por_incorporacao": [{"ano": i["_id"], "count": i["count"]} for i in por_incorporacao if i["_id"]],
         "alertas_reforma": membros_proximos_reforma,
-        "total_alertas_reforma": len(membros_proximos_reforma)
+        "total_alertas_reforma": len(membros_proximos_reforma),
+        "alertas_55_anos": membros_proximos_55,
+        "total_alertas_55": len(membros_proximos_55)
     }
 
 # ==================== NOTIFICATIONS ====================
