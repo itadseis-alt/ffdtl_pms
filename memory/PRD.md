@@ -2,7 +2,7 @@
 ## PRD - Product Requirements Document
 
 ### Data de Criação: 2026-01-26
-### Última Atualização: 2026-04-27
+### Última Atualização: 2026-05-21
 
 ---
 
@@ -47,15 +47,18 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 - [x] Desativação de usuários
 
 ### 3.2 Dashboard
-- [x] Total de membros
+- [x] Total de Efetivos (renomeado de "Total Membros")
 - [x] Estatísticas por status (Ativo, Falecido, Separação, Reserva, Reforma)
 - [x] Estatísticas por Status de Licença (Em Serviço, Lic. Sem Vencimento, etc.)
+- [x] Estatísticas por Componente (CFT, CFN, CAL, Outros)
 - [x] Estatísticas por sexo
 - [x] Gráficos por unidade
 - [x] Gráficos por posto
 - [x] Gráficos por tipo sanguíneo
 - [x] Filtro por unidade
 - [x] Cards clicáveis para navegação rápida
+- [x] Alertas de Reforma (membros com 59 anos)
+- [x] Alertas de 55 Anos (membros com 54 anos)
 
 ### 3.3 Gestão de Membros
 - [x] Cadastro com 16 steps
@@ -100,6 +103,14 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 ---
 
 ## 4. Changelog
+
+### v1.4 (2026-05-21)
+- **Novo:** Dashboard renomeado "Total Membros" → "Total Efetivos"
+- **Novo:** Alertas de 55 anos no Dashboard (membros com 54 anos - 1 ano antes)
+- **Novo:** Campo "Data Cartão Eleitoral" no Step 2 (Documentos)
+- **Novo:** Checkbox "Ler" no Step 8 (Habilidade de Língua) - agora: Falar, Escrever, Ler, Ouvir
+- **Novo:** Novos postos militares: "Subtenente" (Oficiais) e "Segundo Marinheiro" (Praças)
+- **Correção:** Verificação de anexos - "Ver" aparece corretamente quando ficheiro existe
 
 ### v1.3 (2026-04-27)
 - **Novo:** Nova logo F-FDTL atualizada em todas as páginas
