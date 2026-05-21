@@ -119,7 +119,8 @@ export default function MemberFormPage() {
     estado_medico: [],
     
     // Step 14: Afiliação Familiar
-    nome_pai: '', nome_mae: '', nome_conjuge: '', filhos: [], familia_anexo: '', familia_anexo_nome: '',
+    nome_pai: '', nome_mae: '', num_irmaos: '', num_irmas: '', posicao_filho: '',
+    nome_conjuge: '', filhos: [], familia_anexo: '', familia_anexo_nome: '',
     
     // Step 15: Vestuário
     vestuario: [],
@@ -687,7 +688,7 @@ export default function MemberFormPage() {
                 <Input value={formData.cartao_eleitoral} onChange={(e) => handleInputChange('cartao_eleitoral', e.target.value)} className="rounded-sm" />
               </div>
               <div className="space-y-2">
-                <Label className="text-foreground">Data Cartão Eleitoral</Label>
+                <Label className="text-foreground">Data Cartão de Eleitor</Label>
                 <Input type="date" value={formData.cartao_eleitoral_data || ''} onChange={(e) => handleInputChange('cartao_eleitoral_data', e.target.value)} className="rounded-sm" />
               </div>
               <FileUploadField label="Anexo Cartão de Eleitor" field="cartao_eleitoral_anexo" value={formData.cartao_eleitoral_anexo} nameField="cartao_eleitoral_anexo_nome" fileName={formData.cartao_eleitoral_anexo_nome} />
@@ -749,11 +750,11 @@ export default function MemberFormPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label className="text-foreground">Ano Início do Estudo</Label>
+                        <Label className="text-foreground">Ano de Início do Estudo</Label>
                         <Input type="number" value={hab.ano_inicio_estudo || ''} onChange={(e) => handleArrayChange('habilitacoes', index, 'ano_inicio_estudo', e.target.value)} className="rounded-sm" placeholder="Ex: 2015" />
                       </div>
                       <div className="space-y-2">
-                        <Label className="text-foreground">Ano de Finalização</Label>
+                        <Label className="text-foreground">Ano de Finalização do Estudo</Label>
                         <Input type="number" value={hab.ano_estudo || ''} onChange={(e) => handleArrayChange('habilitacoes', index, 'ano_estudo', e.target.value)} className="rounded-sm" placeholder="Ex: 2019" />
                       </div>
                       <div className="space-y-2">
@@ -1243,6 +1244,24 @@ export default function MemberFormPage() {
                   <Label className="text-foreground">Nome da Mãe</Label>
                   <Input value={formData.nome_mae} onChange={(e) => handleInputChange('nome_mae', e.target.value)} className="rounded-sm" />
                 </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-foreground">Nº. Irmãos</Label>
+                  <Input type="number" min="0" value={formData.num_irmaos || ''} onChange={(e) => handleInputChange('num_irmaos', e.target.value)} className="rounded-sm" placeholder="0" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-foreground">Nº. Irmãs</Label>
+                  <Input type="number" min="0" value={formData.num_irmas || ''} onChange={(e) => handleInputChange('num_irmas', e.target.value)} className="rounded-sm" placeholder="0" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-foreground">Posição do(a) Filho(a)</Label>
+                  <Input type="number" min="1" value={formData.posicao_filho || ''} onChange={(e) => handleInputChange('posicao_filho', e.target.value)} className="rounded-sm" placeholder="1" />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">
                   <Label className="text-foreground">Nome do/a Cônjuge</Label>
                   <Input value={formData.nome_conjuge} onChange={(e) => handleInputChange('nome_conjuge', e.target.value)} className="rounded-sm" />
@@ -1276,7 +1295,7 @@ export default function MemberFormPage() {
                 </Button>
               </div>
               
-              <FileUploadField label="Anexo" field="familia_anexo" value={formData.familia_anexo} nameField="familia_anexo_nome" fileName={formData.familia_anexo_nome} />
+              <FileUploadField label="Anexo Documento Familiar" field="familia_anexo" value={formData.familia_anexo} nameField="familia_anexo_nome" fileName={formData.familia_anexo_nome} />
             </div>
           )}
 
@@ -1407,6 +1426,17 @@ export default function MemberFormPage() {
         </Button>
         
         <div className="flex gap-2">
+          {/* Save Step Button - Always visible */}
+          <Button
+            onClick={handleSubmit}
+            disabled={saving}
+            variant="outline"
+            className="rounded-sm border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+            data-testid="save-step-button"
+          >
+            <Save className="h-4 w-4 mr-2" /> Salvar Step
+          </Button>
+          
           {currentStep < STEPS.length - 1 ? (
             <Button
               onClick={() => setCurrentStep(currentStep + 1)}

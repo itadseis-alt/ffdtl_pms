@@ -191,8 +191,8 @@ export default function MemberDetailPage() {
         <InfoRow label="Payroll No" value={member.payroll_no} />
         <InfoRow label="NISS No" value={member.niss_no} />
         <InfoRow label="No. Utente" value={member.utente_no} />
-        <InfoRow label="Cartão Eleitoral" value={member.cartao_eleitoral} />
-        <InfoRow label="Data Cartão Eleitoral" value={member.cartao_eleitoral_data} />
+        <InfoRow label="Cartão de Eleitor" value={member.cartao_eleitoral} />
+        <InfoRow label="Data Cartão de Eleitor" value={member.cartao_eleitoral_data} />
         <InfoRow label="Bilhete de Identidade" value={member.bilhete_identidade} />
         <InfoRow label="Certidão de RDTL" value={member.certidao_rdtl} />
         <InfoRow label="Passaporte" value={member.passaporte} />
@@ -324,12 +324,22 @@ export default function MemberDetailPage() {
         <h3 className="text-lg font-semibold text-foreground mb-4 border-b border-border pb-2">14. Afiliação Familiar</h3>
         <InfoRow label="Nome do Pai" value={member.nome_pai} />
         <InfoRow label="Nome da Mãe" value={member.nome_mae} />
+        <InfoRow label="Nº. Irmãos" value={member.num_irmaos} />
+        <InfoRow label="Nº. Irmãs" value={member.num_irmas} />
+        <InfoRow label="Posição do(a) Filho(a)" value={member.posicao_filho} />
         <InfoRow label="Nome do/a Cônjuge" value={member.nome_conjuge} />
         {member.filhos && member.filhos.length > 0 && (
           <div className="mt-2">
             {member.filhos.map((filho, idx) => (
               <InfoRow key={idx} label={`${idx + 1}º Filho(a)`} value={filho} />
             ))}
+          </div>
+        )}
+        {member.familia_anexo && (
+          <div className="mt-2">
+            <a href={getFileUrl(member.familia_anexo)} target="_blank" rel="noopener noreferrer" className="text-sm text-emerald-600 hover:underline flex items-center gap-1">
+              <FileText className="h-4 w-4" /> Ver Anexo Documento Familiar
+            </a>
           </div>
         )}
       </div>
@@ -541,8 +551,8 @@ export default function MemberDetailPage() {
                 <DocumentRow label="Payroll No" value={member.payroll_no} anexo={member.payroll_anexo} />
                 <DocumentRow label="NISS No" value={member.niss_no} anexo={member.niss_anexo} />
                 <DocumentRow label="No. Utente" value={member.utente_no} anexo={member.utente_anexo} />
-                <DocumentRow label="Cartão Eleitoral" value={member.cartao_eleitoral} anexo={member.cartao_eleitoral_anexo} />
-                <InfoRow label="Data Cartão Eleitoral" value={member.cartao_eleitoral_data} />
+                <DocumentRow label="Cartão de Eleitor" value={member.cartao_eleitoral} anexo={member.cartao_eleitoral_anexo} />
+                <InfoRow label="Data Cartão de Eleitor" value={member.cartao_eleitoral_data} />
                 <DocumentRow label="Bilhete de Identidade" value={member.bilhete_identidade} anexo={member.bilhete_identidade_anexo} />
                 <DocumentRow label="Certidão de RDTL" value={member.certidao_rdtl} anexo={member.certidao_rdtl_anexo} />
                 <DocumentRow label="Passaporte" value={member.passaporte} anexo={member.passaporte_anexo} />
@@ -654,6 +664,9 @@ export default function MemberDetailPage() {
               <div>
                 <InfoRow label="Nome do Pai" value={member.nome_pai} />
                 <InfoRow label="Nome da Mãe" value={member.nome_mae} />
+                <InfoRow label="Nº. Irmãos" value={member.num_irmaos} />
+                <InfoRow label="Nº. Irmãs" value={member.num_irmas} />
+                <InfoRow label="Posição do(a) Filho(a)" value={member.posicao_filho} />
                 <InfoRow label="Nome do/a Cônjuge" value={member.nome_conjuge} />
                 {member.filhos && member.filhos.length > 0 && (
                   <div className="mt-4">
@@ -661,6 +674,13 @@ export default function MemberDetailPage() {
                     {member.filhos.map((filho, idx) => (
                       <InfoRow key={idx} label={`${idx + 1}º Filho(a)`} value={filho} />
                     ))}
+                  </div>
+                )}
+                {member.familia_anexo && (
+                  <div className="mt-4 print-hide-anexo">
+                    <a href={getFileUrl(member.familia_anexo)} target="_blank" rel="noopener noreferrer" className="text-sm text-emerald-600 hover:underline flex items-center gap-1">
+                      <FileText className="h-4 w-4" /> Ver Anexo Documento Familiar
+                    </a>
                   </div>
                 )}
               </div>

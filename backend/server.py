@@ -214,6 +214,9 @@ class MemberCreate(BaseModel):
     # Step 14: Afiliação Familiar
     nome_pai: Optional[str] = None
     nome_mae: Optional[str] = None
+    num_irmaos: Optional[str] = None
+    num_irmas: Optional[str] = None
+    posicao_filho: Optional[str] = None
     nome_conjuge: Optional[str] = None
     filhos: Optional[List[str]] = None
     familia_anexo: Optional[str] = None
