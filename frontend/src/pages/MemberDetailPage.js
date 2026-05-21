@@ -192,6 +192,7 @@ export default function MemberDetailPage() {
         <InfoRow label="NISS No" value={member.niss_no} />
         <InfoRow label="No. Utente" value={member.utente_no} />
         <InfoRow label="Cartão Eleitoral" value={member.cartao_eleitoral} />
+        <InfoRow label="Data Cartão Eleitoral" value={member.cartao_eleitoral_data} />
         <InfoRow label="Bilhete de Identidade" value={member.bilhete_identidade} />
         <InfoRow label="Certidão de RDTL" value={member.certidao_rdtl} />
         <InfoRow label="Passaporte" value={member.passaporte} />
@@ -259,6 +260,7 @@ export default function MemberDetailPage() {
           { key: 'lingua', label: 'Língua' },
           { key: 'falar', label: 'Falar' },
           { key: 'escrever', label: 'Escrever' },
+          { key: 'ler', label: 'Ler' },
           { key: 'ouvir', label: 'Ouvir' }
         ]} />
       </div>
@@ -540,6 +542,7 @@ export default function MemberDetailPage() {
                 <DocumentRow label="NISS No" value={member.niss_no} anexo={member.niss_anexo} />
                 <DocumentRow label="No. Utente" value={member.utente_no} anexo={member.utente_anexo} />
                 <DocumentRow label="Cartão Eleitoral" value={member.cartao_eleitoral} anexo={member.cartao_eleitoral_anexo} />
+                <InfoRow label="Data Cartão Eleitoral" value={member.cartao_eleitoral_data} />
                 <DocumentRow label="Bilhete de Identidade" value={member.bilhete_identidade} anexo={member.bilhete_identidade_anexo} />
                 <DocumentRow label="Certidão de RDTL" value={member.certidao_rdtl} anexo={member.certidao_rdtl_anexo} />
                 <DocumentRow label="Passaporte" value={member.passaporte} anexo={member.passaporte_anexo} />
@@ -596,6 +599,7 @@ export default function MemberDetailPage() {
                 { key: 'lingua', label: 'Língua' },
                 { key: 'falar', label: 'Falar' },
                 { key: 'escrever', label: 'Escrever' },
+                { key: 'ler', label: 'Ler' },
                 { key: 'ouvir', label: 'Ouvir' }
               ]} />
             )}

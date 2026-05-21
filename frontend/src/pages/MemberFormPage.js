@@ -79,7 +79,7 @@ export default function MemberFormPage() {
     payroll_no: '', payroll_anexo: '', payroll_anexo_nome: '',
     niss_no: '', niss_anexo: '', niss_anexo_nome: '',
     utente_no: '', utente_anexo: '', utente_anexo_nome: '',
-    cartao_eleitoral: '', cartao_eleitoral_anexo: '', cartao_eleitoral_anexo_nome: '',
+    cartao_eleitoral: '', cartao_eleitoral_data: '', cartao_eleitoral_anexo: '', cartao_eleitoral_anexo_nome: '',
     bilhete_identidade: '', bilhete_identidade_anexo: '', bilhete_identidade_anexo_nome: '',
     certidao_rdtl: '', certidao_rdtl_anexo: '', certidao_rdtl_anexo_nome: '',
     passaporte: '', passaporte_anexo: '', passaporte_anexo_nome: '',
@@ -683,8 +683,12 @@ export default function MemberFormPage() {
               <FileUploadField label="Anexo Utente" field="utente_anexo" value={formData.utente_anexo} nameField="utente_anexo_nome" fileName={formData.utente_anexo_nome} />
               
               <div className="space-y-2">
-                <Label className="text-foreground">Cartão de Eleitor</Label>
+                <Label className="text-foreground">Cartão de Eleitor (Nº)</Label>
                 <Input value={formData.cartao_eleitoral} onChange={(e) => handleInputChange('cartao_eleitoral', e.target.value)} className="rounded-sm" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-foreground">Data Cartão Eleitoral</Label>
+                <Input type="date" value={formData.cartao_eleitoral_data || ''} onChange={(e) => handleInputChange('cartao_eleitoral_data', e.target.value)} className="rounded-sm" />
               </div>
               <FileUploadField label="Anexo Cartão de Eleitor" field="cartao_eleitoral_anexo" value={formData.cartao_eleitoral_anexo} nameField="cartao_eleitoral_anexo_nome" fileName={formData.cartao_eleitoral_anexo_nome} />
               
@@ -991,7 +995,7 @@ export default function MemberFormPage() {
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                       <div className="space-y-2">
                         <Label className="text-foreground">Língua</Label>
                         <Input value={ling.lingua || ''} onChange={(e) => handleArrayChange('habilidade_lingua', index, 'lingua', e.target.value)} className="rounded-sm" />
@@ -1005,6 +1009,10 @@ export default function MemberFormPage() {
                         <Label className="text-foreground">Escrever</Label>
                       </div>
                       <div className="flex items-center gap-2">
+                        <Checkbox checked={ling.ler || false} onCheckedChange={(c) => handleArrayChange('habilidade_lingua', index, 'ler', c)} />
+                        <Label className="text-foreground">Ler</Label>
+                      </div>
+                      <div className="flex items-center gap-2">
                         <Checkbox checked={ling.ouvir || false} onCheckedChange={(c) => handleArrayChange('habilidade_lingua', index, 'ouvir', c)} />
                         <Label className="text-foreground">Ouvir</Label>
                       </div>
@@ -1012,7 +1020,7 @@ export default function MemberFormPage() {
                   </CardContent>
                 </Card>
               ))}
-              <Button variant="outline" onClick={() => handleArrayAdd('habilidade_lingua', { lingua: '', falar: false, escrever: false, ouvir: false })} className="rounded-sm">
+              <Button variant="outline" onClick={() => handleArrayAdd('habilidade_lingua', { lingua: '', falar: false, escrever: false, ler: false, ouvir: false })} className="rounded-sm">
                 <Plus className="h-4 w-4 mr-2" /> Adicionar Língua
               </Button>
             </div>

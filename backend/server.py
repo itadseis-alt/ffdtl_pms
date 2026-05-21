@@ -165,6 +165,7 @@ class MemberCreate(BaseModel):
     utente_no: Optional[str] = None
     utente_anexo: Optional[str] = None
     cartao_eleitoral: Optional[str] = None
+    cartao_eleitoral_data: Optional[str] = None
     cartao_eleitoral_anexo: Optional[str] = None
     bilhete_identidade: Optional[str] = None
     bilhete_identidade_anexo: Optional[str] = None
