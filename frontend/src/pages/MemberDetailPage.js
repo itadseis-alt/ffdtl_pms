@@ -113,12 +113,19 @@ export default function MemberDetailPage() {
 
   if (!member) return null;
 
-  const InfoRow = ({ label, value }) => (
-    <div className="grid grid-cols-2 py-2 border-b border-border">
-      <span className="text-sm text-muted-foreground">{label}</span>
-      <span className="text-sm text-foreground font-medium">{value || '-'}</span>
-    </div>
-  );
+  const InfoRow = ({ label, value }) => {
+    // Se for boolean, mostrar ✓ para true ou - para false
+    let displayValue = value;
+    if (typeof value === 'boolean') {
+      displayValue = value ? '✓' : '-';
+    }
+    return (
+      <div className="grid grid-cols-2 py-2 border-b border-border">
+        <span className="text-sm text-muted-foreground">{label}</span>
+        <span className="text-sm text-foreground font-medium">{displayValue || '-'}</span>
+      </div>
+    );
+  };
 
   const DocumentRow = ({ label, value, anexo }) => (
     <div className="grid grid-cols-3 py-2 border-b border-border items-center">
@@ -507,12 +514,81 @@ export default function MemberDetailPage() {
             <img src={LOGO} alt="Logo" className="h-16 w-16" />
             <div className="text-center">
               <h2 className="text-xl font-bold">FALINTIL-Forças de Defesa de Timor-Leste (F-FDTL)</h2>
-              <p className="text-sm font-semibold">Quartel General</p>
-              <p className="text-sm mt-2">Ficha do Membro - {member.nome}</p>
-              <p className="text-xs text-muted-foreground">NIM: {member.nim} | {new Date().toLocaleDateString('pt-PT')}</p>
+              <p className="text-sm font-semibold">Quartel General das FALINTIL-FDTL</p>
+              <p className="text-sm">Divisão de Pessoas</p>
             </div>
             <div className="w-16"></div>
           </div>
+          
+          {/* Dados Pessoais Fixos para Impressão do Step */}
+          <div className="mt-4 mb-6 border rounded p-4">
+            <div className="flex gap-4">
+              {/* Foto */}
+              <div className="w-24 h-28 flex-shrink-0 border rounded overflow-hidden">
+                {member.foto_perfil ? (
+                  <img src={getFileUrl(member.foto_perfil)} alt="Foto" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <User className="h-8 w-8 text-gray-400" />
+                  </div>
+                )}
+              </div>
+              
+              {/* Dados em duas colunas */}
+              <div className="flex-1 grid grid-cols-2 gap-x-8 gap-y-1 text-sm">
+                <div className="border-b py-1">
+                  <span className="text-gray-500">NIM:</span> <span className="font-medium">{member.nim}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">Nº. Cartão de Eleitor:</span> <span className="font-medium">{member.cartao_eleitoral || '-'}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">Nome Completo:</span> <span className="font-medium">{member.nome}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">Nº. Bilhete de Identidade:</span> <span className="font-medium">{member.bilhete_identidade || '-'}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">Sexo:</span> <span className="font-medium">{member.sexo === 'M' ? 'Masculino' : 'Feminino'}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">Naturalidade:</span> <span className="font-medium">{member.naturalidade || '-'}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">Posto:</span> <span className="font-medium">{member.posto}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">Residência Atual:</span> <span className="font-medium">{member.residencia_atual || '-'}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">Atual Função:</span> <span className="font-medium">{member.atual_funcao || '-'}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">Município:</span> <span className="font-medium">{member.municipio || '-'}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">Unidade:</span> <span className="font-medium">{member.unidade}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">Estado Civil:</span> <span className="font-medium">{member.estado_civil || '-'}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">Nacionalidade:</span> <span className="font-medium">{member.nacionalidade || '-'}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">Nº de Contacto:</span> <span className="font-medium">{member.numero_contacto || '-'}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">Data Nascimento:</span> <span className="font-medium">{member.data_nascimento || '-'}</span>
+                </div>
+                <div className="border-b py-1">
+                  <span className="text-gray-500">E-mail:</span> <span className="font-medium">{member.email || '-'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <h3 className="text-lg font-bold border-b pb-2 mb-4">{TABS.find(t => t.id === activeTab)?.label}</h3>
         </div>
 
         <Card className="border border-border rounded-sm shadow-none">

@@ -456,20 +456,20 @@ export default function DashboardPage() {
         </Card>
       )}
 
-      {/* Alerta de 55 Anos - 1 ano antes (54 anos) */}
+      {/* Alerta de Reserva - 1 ano antes (54 anos) */}
       {stats?.alertas_55_anos?.length > 0 && (
-        <Card className="border-2 border-orange-300 dark:border-orange-700 rounded-sm shadow-none bg-orange-50 dark:bg-orange-950" data-testid="alerta-55-anos-card">
+        <Card className="border-2 border-orange-300 dark:border-orange-700 rounded-sm shadow-none bg-orange-50 dark:bg-orange-950" data-testid="alerta-reserva-card">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg text-orange-700 dark:text-orange-300 flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 <Bell className="h-5 w-5" />
-                Alerta 55 Anos - 1 Ano Antes ({stats.total_alertas_55 || 0} membro(s))
+                Alerta de Reserva - 1 Ano Antes ({stats.total_alertas_55 || 0} membro(s))
               </CardTitle>
             </div>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-orange-600 dark:text-orange-400 mb-3">
-              Membros com 54 anos que completarão 55 anos no próximo ano:
+              Membros com 54 anos que entrarão na reserva (55 anos) no próximo ano:
             </p>
             <div className="space-y-2 max-h-60 overflow-y-auto">
               {stats.alertas_55_anos.map((membro) => (
