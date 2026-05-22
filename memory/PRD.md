@@ -117,6 +117,7 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 - **Novo:** 5 membros de teste criados (TEST001-TEST005)
 - **Novo:** Símbolo TIC (✓) claro nas habilidades de Língua quando true
 - **Novo:** Impressão de Step Atual com dados pessoais fixos incluídos
+- **Novo:** Filtro por Componente na página de Gestão de Membros (CFT, CFN, CAL, Outros)
 - **Correção:** Verificação de anexos - "Ver" aparece corretamente quando ficheiro existe
 
 ### v1.3 (2026-04-27)

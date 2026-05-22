@@ -53,6 +53,7 @@ export default function MembersPage() {
   const initialStatus = searchParams.get('status') || 'Ativo';
   const initialStatusLicenca = searchParams.get('status_licenca') || '';
   const initialUnidade = searchParams.get('unidade') || '';
+  const initialComponente = searchParams.get('componente') || '';
   
   // Filters
   const [statusFilter, setStatusFilter] = useState(initialStatus);
@@ -62,8 +63,9 @@ export default function MembersPage() {
   const [postoFilter, setPostoFilter] = useState('');
   const [municipioFilter, setMunicipioFilter] = useState('');
   const [unidadeFilter, setUnidadeFilter] = useState(initialUnidade);
+  const [componenteFilter, setComponenteFilter] = useState(initialComponente);
   const [anoIncorporacaoFilter, setAnoIncorporacaoFilter] = useState('');
-  const [showFilters, setShowFilters] = useState(initialUnidade ? true : false);
+  const [showFilters, setShowFilters] = useState(initialUnidade || initialComponente ? true : false);
   
   // Constants
   const [postos, setPostos] = useState({});
@@ -83,6 +85,7 @@ export default function MembersPage() {
     const urlStatus = searchParams.get('status');
     const urlStatusLicenca = searchParams.get('status_licenca');
     const urlUnidade = searchParams.get('unidade');
+    const urlComponente = searchParams.get('componente');
     
     if (urlStatus && urlStatus !== statusFilter) {
       setStatusFilter(urlStatus);
@@ -96,6 +99,12 @@ export default function MembersPage() {
     if (urlUnidade) {
       setUnidadeFilter(urlUnidade);
       setStatusFilter(''); // Clear status filter when filtering by unit
+      setShowFilters(true);
+      setPage(1);
+    }
+    if (urlComponente) {
+      setComponenteFilter(urlComponente);
+      setStatusFilter(''); // Clear status filter when filtering by component
       setShowFilters(true);
       setPage(1);
     }
@@ -141,6 +150,7 @@ export default function MembersPage() {
       if (postoFilter) params.append('posto', postoFilter);
       if (municipioFilter) params.append('municipio', municipioFilter);
       if (unidadeFilter) params.append('unidade', unidadeFilter);
+      if (componenteFilter) params.append('componente', componenteFilter);
       if (anoIncorporacaoFilter) params.append('ano_incorporacao', anoIncorporacaoFilter);
       
       const response = await axios.get(`${API}/members?${params.toString()}`);
@@ -246,7 +256,7 @@ export default function MembersPage() {
             </Button>
           </div>
           
-          <div className={`grid grid-cols-1 md:grid-cols-4 gap-4 ${showFilters ? '' : 'hidden md:grid'}`}>
+          <div className={`grid grid-cols-1 md:grid-cols-5 gap-4 ${showFilters ? '' : 'hidden md:grid'}`}>
             <div>
               <Input
                 placeholder="Buscar por nome..."
@@ -264,6 +274,20 @@ export default function MembersPage() {
                 className="rounded-sm"
                 data-testid="search-nim-input"
               />
+            </div>
+            <div>
+              <Select value={componenteFilter} onValueChange={setComponenteFilter}>
+                <SelectTrigger className="rounded-sm" data-testid="filter-componente-select">
+                  <SelectValue placeholder="Filtrar por Componente" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os Componentes</SelectItem>
+                  <SelectItem value="CFT">CFT - Força Terrestre</SelectItem>
+                  <SelectItem value="CFN">CFN - Força Naval</SelectItem>
+                  <SelectItem value="CAL">CAL - Comp. Aérea Ligeira</SelectItem>
+                  <SelectItem value="Outros">Outros (QG, FAG, UAS...)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <Select value={postoFilter} onValueChange={setPostoFilter}>
@@ -344,6 +368,7 @@ export default function MembersPage() {
                   setPostoFilter('');
                   setMunicipioFilter('');
                   setUnidadeFilter('');
+                  setComponenteFilter('');
                   setAnoIncorporacaoFilter('');
                   setStatusLicencaFilter('');
                   setStatusFilter('Ativo');
