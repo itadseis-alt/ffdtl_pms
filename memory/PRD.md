@@ -106,7 +106,7 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 
 ### v1.4 (2026-05-21)
 - **Novo:** Dashboard renomeado "Total Membros" → "Total Efetivos"
-- **Novo:** Alertas de 55 anos no Dashboard (membros com 54 anos - 1 ano antes)
+- **Novo:** Alerta de Reserva no Dashboard (membros com 54 anos - 1 ano antes dos 55)
 - **Novo:** Campo "Data Cartão de Eleitor" no Step 2 (Documentos)
 - **Novo:** Checkbox "Ler" no Step 8 (Habilidade de Língua) - agora: Falar, Escrever, Ler, Ouvir
 - **Novo:** Novos postos militares: "Subtenente" (Oficiais) e "Segundo Marinheiro" (Praças)
@@ -115,6 +115,8 @@ Sistema web de gestão de pessoal militar para FALINTIL-FDTL (Forças de Defesa 
 - **Novo:** Botão "Salvar Step" em cada passo do formulário
 - **Novo:** Renomeado "Cartão Eleitoral" → "Cartão de Eleitor"
 - **Novo:** 5 membros de teste criados (TEST001-TEST005)
+- **Novo:** Símbolo TIC (✓) claro nas habilidades de Língua quando true
+- **Novo:** Impressão de Step Atual com dados pessoais fixos incluídos
 - **Correção:** Verificação de anexos - "Ver" aparece corretamente quando ficheiro existe
 
 ### v1.3 (2026-04-27)
