@@ -278,14 +278,23 @@ export default function MembersPage() {
             <div>
               <Select value={componenteFilter} onValueChange={setComponenteFilter}>
                 <SelectTrigger className="rounded-sm" data-testid="filter-componente-select">
-                  <SelectValue placeholder="Filtrar por Componente" />
+                  <SelectValue placeholder="Filtrar por Componente/Unidade" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Todos os Componentes</SelectItem>
-                  <SelectItem value="CFT">CFT - Força Terrestre</SelectItem>
-                  <SelectItem value="CFN">CFN - Força Naval</SelectItem>
-                  <SelectItem value="CAL">CAL - Comp. Aérea Ligeira</SelectItem>
-                  <SelectItem value="Outros">Outros (QG, FAG, UAS...)</SelectItem>
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="Quartel General">Quartel General</SelectItem>
+                  <SelectItem value="Componente Força Terrestre (CFT)">Componente Força Terrestre (CFT)</SelectItem>
+                  <SelectItem value="Componente Força Naval (CFN)">Componente Força Naval (CFN)</SelectItem>
+                  <SelectItem value="Componente Aérea Ligeira (CAL)">Componente Aérea Ligeira (CAL)</SelectItem>
+                  <SelectItem value="Força Apoio Geral (FAG)">Força Apoio Geral (FAG)</SelectItem>
+                  <SelectItem value="Unidade Apoio Serviço (UAS)">Unidade Apoio Serviço (UAS)</SelectItem>
+                  <SelectItem value="Centro de Instrução do Comandante Nicolau Lobato (CICNL)">Centro de Instrução do Comandante Nicolau Lobato (CICNL)</SelectItem>
+                  <SelectItem value="Unidade de Polícia Militar (PM)">Unidade de Polícia Militar (PM)</SelectItem>
+                  <SelectItem value="Unidade FALINTIL (UF)">Unidade FALINTIL (UF)</SelectItem>
+                  <SelectItem value="1º Batalhão da CFT">1º Batalhão da CFT</SelectItem>
+                  <SelectItem value="2º Batalhão da CFT">2º Batalhão da CFT</SelectItem>
+                  <SelectItem value="Companhia de Transmissões">Companhia de Transmissões</SelectItem>
+                  <SelectItem value="Companhia de Engenharia">Companhia de Engenharia</SelectItem>
                 </SelectContent>
               </Select>
             </div>

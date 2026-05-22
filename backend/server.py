@@ -510,15 +510,8 @@ async def list_members(
     if unidade:
         query["unidade"] = unidade
     if componente:
-        # Filtro por componente baseado na unidade
-        if componente == "CFT":
-            query["unidade"] = {"$regex": "Componente Força Terrestre|CFT", "$options": "i"}
-        elif componente == "CFN":
-            query["unidade"] = {"$regex": "Componente Força Naval|CFN", "$options": "i"}
-        elif componente == "CAL":
-            query["unidade"] = {"$regex": "Componente Aérea Ligeira|CAL", "$options": "i"}
-        elif componente == "Outros":
-            query["unidade"] = {"$not": {"$regex": "Componente Força Terrestre|CFT|Componente Força Naval|CFN|Componente Aérea Ligeira|CAL", "$options": "i"}}
+        # Filtro direto por unidade/componente específico
+        query["unidade"] = {"$regex": componente, "$options": "i"}
     if posto:
         query["posto"] = posto
     if municipio:
